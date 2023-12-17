@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <title>Sign Up | Buzz</title>
+  </head>
+
+
+  <body class="sign-up-page">
+    <header>
+      <div class="container">
+
+        <a href="/landing"><img src="/images/WebsiteLogo.png" alt="Logo" class="logo"></a>
+          <nav>
+              <ul>
+        
+              </ul>
+      
+              <div class="search-icon">
+              
+              </div>
+              
+              <div class="profile-icon-head prof-online">
+              </div>
+      
+          </nav>
+        
+      </div> 
+    </header>
+
+    <div class="background-img">
+      <img class="image1" src="images/logo-hexa.png">
+      <img class="image2" src="images/logo-hexa.png">
+      <img class="image3" src="images/logo-hexa.png">
+      <img class="image4" src="images/logo-hexa.png">
+      <img class="image5" src="images/logo-hexa.png">
+      <img class="image6" src="images/logo-hexa.png">
+      <img class="image7" src="images/logo-hexa.png">
+      <img class="image8" src="images/logo-hexa.png">
+    </div>
+
+
+    <% if(typeof alert != 'undefined') { %>
+      <% alert.forEach(function(error) { %>
+        <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <p><%= (error.msg); %></p><br>
+        </div>
+    <% }) %>
+<% } %>
+
+    <div class="form-container">
+      <form action="/signup" class="create-account" method="POST">
+        <fieldset>
+          <div class="form-header">
+            Sign up Now!
+          </div>
+          <div class="name-section">
+            <div class="first-name">
+              <input type="text" required id="fname" name="fname" placeholder="First Name" value=<% if (typeof renFirst != 'undefined') { %>
+                <%= renFirst; %>
+              <% } %>>
+            </div>
+            <div class="last-name">
+              <input type="text" required id="lname" name="lname" placeholder="Last Name" value=<% if (typeof renLast != 'undefined') { %>
+                <%= renLast; %>
+              <% } %>>
+            </div>
+          </div>
+
+          <div class="username-section">
+            <div class="username">
+              <input type="text" required id="usernm" name="usernm" placeholder="Create Username" value=<% if (typeof renUsername != 'undefined') { %>
+                <%= renUsername; %>
+              <% } %>>
+            </div>
+          </div>
+
+          <div class="email-section">
+            <div class="enter-email">
+              <input type="text" required id="email" name="email" placeholder="Enter Email" value=<% if (typeof renEmail != 'undefined') { %>
+                <%= renEmail; %>
+              <% } %>>
+            </div>
+            <!-- <%
+            if (locals.errors) { %>
+              <h2><%= locals.errors.errors.map(error => error.msg).join(', '); %></h2>
+            <% } %> -->
+            <div class="re-enter-email">
+              <input type="email" required id="reemail" name="reemail" placeholder="Re-Enter Email" value=<% if (typeof renReemail != 'undefined') { %>
+                <%= renReemail; %>
+              <% } %>>
+            </div>
+          </div>
+
+          <div class="password-section">
+            <div class="enter-password">
+              <input type="password" required id="pswd" name="pswd" class="pass-enter" placeholder="Create Password" value=<% if (typeof renPswd != 'undefined') { %>
+                <%= renPswd; %>
+              <% } %>>
+              <input type="password" required id="repswd" name="repswd" class="pass-reenter" placeholder="Re-Enter Password" value=<% if (typeof renRepswd != 'undefined') { %>
+                <%= renRepswd; %>
+              <% } %>>
+            </div>
+          </div>
+
+          <div class="birthdate-notis">
+
+            <div class="birthday-section">
+              <p>Please Enter Your Date of Birth</p>
+              <div class="enter-birth-date">
+                <input id="bdate" required name="bdate" type="date">
+              </div>
+            </div>
+
+            <div class="notis-section">
+              <p>Subscribe to Email Notifications?</p>
+              <div class="email-notis">
+                <input name="notis" required id="notis1" class="radio-yes" value="Yes" type="radio"><p>Yes</p>
+                <input name="notis" required id="notis2" class="radio-no" value="No" type="radio"><p>No</p>
+              </div>
+            </div>
+          </div>
+
+          <button class="submit-button" type="submit">Submit!</button>
+        </fieldset>
+      </form>
+
+    </div>
+
+    <!-- <div class="sign-up-border"></div>
+
+    <div class="sign-up-err">
+      <% if(typeof alert2 != 'undefined') { %>
+          <div class="alert2">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <p><%= (alert2); %></p><br>
+          </div>
+  <% } %>
+
+    <% if(typeof alert3 != 'undefined') { %>
+      <div class="alert3">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <p><%= (alert3); %></p><br>
+      </div>
+  <% } %>
+
+  <% if(typeof alert4 != 'undefined') { %>
+    <div class="alert4">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+      <p><%= (alert4); %></p><br>
+    </div>
+<% } %>
+
+      <div class="form-container2">
+        <form action="/login" method="POST">
+          <fieldset>
+            <div class="container2-header">
+              Sign In!
+            </div>
+
+            <div class="username-signin">
+              <div class="signin-name">
+                <input type="text" id="logusername" name="logusername" required placeholder="Enter Username or Email">
+              </div>
+            </div>
+
+            <div class="password-signin">
+              <div class="signin-password">
+                <input type="password" id="logpswd" name="logpswd" required placeholder="Enter Password">
+              </div>
+            </div>
+
+            <div class="forgot-password-email">
+              <a href="#" class="forgot-link">Forgot Password or Username?</a>
+            </div>
+
+            <button class="signin-submit-button" type="submit">Login</button>
+          </fieldset>
+        </form>
+      </div>
+    </div> -->
+
+  </body>
+
+
+
+  <script src="EJSapp.js"></script>
+
+</html>

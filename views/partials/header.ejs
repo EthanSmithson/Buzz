@@ -1,0 +1,249 @@
+<div class="container">
+
+  <a href="/index"><img src="/images/WebsiteLogo.png" alt="Logo" class="logo"></a>
+    <nav>
+        <ul>
+          <li><a href="/index" class="hover-effect"><i class="fa-solid fa-house fa-2x"></i></a></li>
+          <li><a href="/messages" class="hover-effect"><i class="fa-solid fa-envelope fa-2x"></i></a></li>
+          <li><a href="/gallary" class="hover-effect"><i class="fa-solid fa-image fa-2x"></i></a></li>
+        </ul>
+
+        <div class="search-icon">
+          <input type="text" id="searchBox" class="searchbar" onkeyup="findUser(document.getElementById('searchBox').value)" placeholder="Find Someone...">
+          <button class="searchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="subMenuWrap2">
+          <div class="submenu2">
+            <div class="list" id="list"></div>    
+            <div class="addedUser" id="added"></div>
+          </div>
+        </div>
+
+        <div class="profile-icon-head prof-online">
+          <img class="profile-img" src="images/userIcon.png" onclick="openSubMenu()">
+        </div>
+
+        <a class="notis" href="#" onclick="openNotis()">
+          <i class="fa-solid fa-bell fa-lg"></i>
+        </a>
+
+        <div class="subMenuWrap" id="subMenu">
+            <div class="subMenu">
+              <div class="userInfo">
+                <img class="profile-icon-sub-menu" src="images/userIcon.png">
+                <% if(typeof idUsername != 'undefined') { %>
+                  <p><%= idUsername; %></p>
+                <% } %>
+              </div>
+              <hr>
+              <a href="#" class="sub-menu-link">
+                <i class="fa-regular fa-user"></i>
+                <p>Profile</p>
+                <span>></span>
+              </a>
+              <a href="#" class="sub-menu-link">
+                <i class="fa-solid fa-user-gear"></i>
+                <p>Settings</p>
+                <span>></span>
+              </a>
+              <a href="/landing" class="sub-menu-link">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+                <span>></span>
+              </a>
+            </div>
+        </div>
+
+        <div class="subMenuWrap-notis" id="subMenuNotis">
+          <div class="subMenuNotis">
+            <a onclick="closeNotis()"><i class="fa-solid fa-x"></i></a>
+            <p>test</p>
+          </div>
+      </div>
+
+    </nav>
+  
+</div>
+
+<script>
+  let subMenu = document.getElementById("subMenu");
+  function openSubMenu() {
+    subMenu.classList.toggle("open-menu");
+  }
+
+  window.onclick = (event) => {
+    if(!event.target.matches(".profile-img")) {
+      if(subMenu.classList.contains("open-menu")) {
+        subMenu.classList.remove("open-menu");
+      }
+    }
+  }
+
+  subMenu.addEventListener('click', event => event.stopPropagation());
+
+
+  let notiMenu = document.getElementById("subMenuNotis");
+  function openNotis() {
+    notiMenu.classList.toggle("open-menu-notis");
+  }
+
+  // window.onclick = (event) => {
+  //   if(!event.target.matches(".notis")) {
+  //     if(notiMenu.classList.contains("open-menu")) {
+  //       notiMenu.classList.remove("open-menu");
+  //     }
+  //   }
+  // }
+
+  notiMenu.addEventListener('click', event => event.stopPropagation());
+
+  function closeNotis() {
+    notiMenu.classList.remove("open-menu-notis")
+  }
+
+
+
+  // const searchBtn = document.getElementById('searchBox');
+  const searchbar = document.getElementById('searchBox').value;
+
+  function findUser(data) {
+    const xhr = new XMLHttpRequest();
+    const drop = document.getElementsByClassName('submenu2');
+    // const id = div.children[0].children[0].children[0].children[1].value;
+
+    // xhr.onload = () => {
+    //   console.log('hi');
+    // }
+      xhr.open('GET', `http://localhost:8080/userSearch?usernameSearch=` + data, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+          // data = xhr.responseText;
+          const div = document.getElementById('list');
+          div.innerHTML = xhr.responseText;
+          // if(div.getElementById('exists').value != null) {
+          //   document.getElementsByClassName('addFriend').className = "noAdd";
+          // }
+          
+          for (i = 0; i < div.childElementCount; i++) {
+            
+            var curId = div.children[i].children[1].value;
+            const idArr = div.children[i].children[2].value;
+            var idArrVals = idArr.split(',');
+
+            // for(i = 0; i < idArr.length; i++) {
+            //   if(curId == idArr[i]) {
+            //     idArr.value = '1';
+            //   }
+            // }
+
+            const existingFriendBut = div.children[i].children[4];
+            const existingFriendVal = div.children[i].children[2].value;
+            // console.log(existingFriendBut);
+            // console.log('This is my id: ' + curId);
+            // console.log(idArrVals);
+
+            // for (i = 0; i < idArrVals.length; i++) {
+                if(idArrVals.includes(curId)) {
+                existingFriendBut.className = "noAdd";
+                existingFriendBut.children[0].className = "fa-solid fa-check"
+              } 
+            // }
+            const existingFriendBut1 = div.children[i].children[4];
+            const existingFriendVal1 = div.children[i].children[2].value;
+            if(idArrVals.includes(curId) == false) {
+              const curChild = div.children[i]
+              // console.log(curChild)
+              // console.log(curChild.children[3])
+              const childVal = curChild.children[1].value;
+              // console.log(childVal)
+              // curChild.children[3].onclick = () => {
+                curChild.querySelector('button.addFriend').onclick = () =>{
+                  const xhr2 = new XMLHttpRequest();
+                  xhr2.open('GET', `http://localhost:8080/addFriend?uId=` + childVal, true);
+
+                  xhr2.onreadystatechange = function() {
+                  if(xhr2.readyState === 4 && xhr2.status === 200) {
+                    existingFriendBut1.className = "noAdd";
+                    existingFriendBut1.children[0].className = "fa-solid fa-check"
+                    console.log('Working');
+                    }
+                    
+                  }
+                  xhr2.send();
+
+              }
+            }
+          }
+          
+          // console.log(document.getElementById('list').children[0].children[1].value);
+          // console.log(document.getElementById('list').children[0].children[3]);
+          
+          
+          // for (i = 0; i < div.childElementCount; i++) {
+          //   const existingFriendBut1 = div.children[i].children[4];
+          //   const existingFriendVal1 = div.children[i].children[2].value;
+          //   if(idArrVals.includes(curId) == false) {
+          //     const curChild = div.children[i]
+          //     // console.log(curChild)
+          //     // console.log(curChild.children[3])
+          //     const childVal = curChild.children[1].value;
+          //     // console.log(childVal)
+          //     // curChild.children[3].onclick = () => {
+          //       curChild.querySelector('button.addFriend').onclick = () =>{
+          //         const xhr2 = new XMLHttpRequest();
+          //         xhr2.open('GET', `http://localhost:8080/addFriend?uId=` + childVal, true);
+
+          //         xhr2.onreadystatechange = function() {
+          //         if(xhr2.readyState === 4 && xhr2.status === 200) {
+          //           existingFriendBut1.className = "noAdd";
+          //           existingFriendBut1.children[0].className = "fa-solid fa-check"
+          //           console.log('Working');
+          //           }
+                    
+          //         }
+          //         xhr2.send();
+
+          //     }
+          //   }
+          // }
+          // console.log(div)
+
+
+
+
+
+          // drop.value(div);
+          // console.log(data);
+        }
+      }
+
+      if(data == '') {
+        const div = document.getElementById('list');
+        div.innerHTML = '';
+        return
+      }
+
+
+    xhr.send();
+
+  }
+
+  // document.getElementById('search').onclick = addUser()
+  // function addUser() {
+  //   const xhr = new XMLHttpRequest();
+
+  //     xhr.open('GET', `http://localhost:8080/addFriend`, true);
+
+  //     xhr.onreadystatechange = function() {
+  //       if(xhr.readyState === 4 && xhr.status === 200) {
+  //         console.log(xhr.responseText);
+  //       }
+  //     }
+
+
+  //   xhr.send();
+  // }
+
+</script>

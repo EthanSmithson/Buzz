@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <title>Messages | Buzz</title>
+  </head>
+
+
+  <body>
+    <header>
+      <%- include('partials/header'); %>   
+    </header>
+
+    <div class="message-feed">
+        <div class="left-sidebar-messages">
+            <div class="sidebar-title">
+              <p>Your Messages</p>
+              <a href="#"><i class="fa-regular fa-square-plus fa-xl"></i></a>
+            </div>
+            
+            <div class="messages-searchbar">
+              <input type="text" class="search" placeholder="Search Messages...">
+              <button type="submit" class="messages-search-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            <div class="message-list">
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-1.png">
+                </div>
+                <p>Janice Johnson</p>
+              </div>
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-2.png">
+                </div>
+                <p>Jim Carrol</p>
+              </div>
+      
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-3.png">
+                </div>
+                <p>Kevin Bennet</p>
+              </div>
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-4.jpg">
+                </div>
+                <p>Alicia Picker</p>
+              </div>
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-5.jpg">
+                </div>
+                <p>Justin Jefferson</p>
+              </div>
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-6.jpg">
+                </div>
+                <p>Jermaine Halloway</p>
+              </div>
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-7.jpg">
+                </div>
+                <p>Carissa Stephenson</p>
+              </div>
+
+              <div class="online-contacts">
+                <div class="offline">
+                  <img src="images/contact-8.webp">
+                </div>
+                <p>John Baker</p>
+              </div>
+
+            </div>
+        </div>
+
+        <div class="main-messages">
+            <div class="main-messages-header">
+              <h2>Whats The Buzz?</h2>
+            </div>
+
+            <div class="contact-message-info">
+              <div class="online-contacts">
+                <div class="neutral">
+                  <img src="images/contact-2.png">
+                </div>
+                <h2>Jim Carrol</h2>
+              </div>
+            </div>
+            
+            <div class="message-drop-down">
+                <button onclick="dropDownFunction()" class="dropbtn"><i class=" dropbtn fa-solid fa-phone fa-lg"></i><i class=" dropbtn fa-solid fa-caret-down"></i></button>
+                <div id="myDropDown" class="dropdown-content">
+                  <a href="#"><i class="fa-solid fa-phone fa-sm"></i></a>
+                  <a href="#"><i class="fa-solid fa-video fa-sm"></i></a>
+                </div>
+                <!--<select class="dropbtn" id="option">
+                  <option value="phone"><i class="fa-solid fa-phone"></i>Phone</option>
+                  <option value="phone"><i class="fa-solid fa-video"></i></option>
+                </select>-->
+            </div>
+
+            <div class="text-area">
+              <div class="message-bar">
+                <input type="text" placeholder=" Start Typing...">
+                <button type="submit"><i class="fa-solid fa-arrow-up"></i></button>
+              </div>
+            </div>
+
+        </div>
+    </div>
+    
+
+
+  </body>
+
+
+
+  <script src="EJSapp.js"></script>
+
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <title>Sign Up | Buzz</title>
+  </head>
+
+
+  <body class="landing-up-page">
+    <header>
+      <div class="container">
+
+        <img src="/images/WebsiteLogo.png" alt="Logo" class="logo">
+          <nav>
+              <ul>
+        
+              </ul>
+      
+              <div class="search-icon">
+              
+              </div>
+              
+              <div class="profile-icon-head prof-online">
+              </div>
+      
+          </nav>
+        
+      </div> 
+    </header>
+
+    <img class="man" src="images/manOnPhone.jpg">
+    <img class="woman" src="images/woman.jpg">
+    <!-- <div class="middle">
+        <img id="img-land" class="img-land" src="images/WebsiteLogoBlue.png">
+    </div> -->
+
+    <img class="plane" src="images/paperAgain2.jpg">
+
+    <div class="sign-up-err2">
+      <% if(typeof alert2 != 'undefined') { %>
+          <div class="alert2">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <p><%= (alert2); %></p><br>
+          </div>
+  <% } %>
+
+    <% if(typeof alert3 != 'undefined') { %>
+      <div class="alert3">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <p><%= (alert3); %></p><br>
+      </div>
+  <% } %>
+
+  <% if(typeof alert4 != 'undefined') { %>
+    <div class="alert4">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+      <p><%= (alert4); %></p><br>
+    </div>
+<% } %>
+
+    <div class="right-side"></div>
+    <div class="inputs">
+      <form action="/login" method="POST">
+        <fieldset>
+          <div class="username-signin-land">
+            <div class="signin-name-land">
+              <input type="text" id="logusername" name="logusername" required placeholder="Enter Username or Email">
+            </div>
+          </div>
+
+          <div class="password-signin-land">
+            <div class="signin-password-land">
+              <input type="password" id="logpswd" name="logpswd" required placeholder="Enter Password">
+            </div>
+          </div>
+
+          <div class="forgot-password-email-land">
+            <a href="#" class="forgot-link">Forgot Password or Username?</a>
+          </div>
+
+          <button class="landing-button" type="submit">Login</button>
+        </fieldset>
+        <a href="/signup" class="landing-button2" type="submit">Register</a>
+      </form>
+    </div>
+    </div>
+
+    
+
+  </body>
+
+
+
+  <script src="EJSapp.js"></script>
+
+</html>

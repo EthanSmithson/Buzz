@@ -1,0 +1,6 @@
+/.devcontainer
+/.parcel-cache
+/database.sqbpro
+/dist
+/images
+/node_modules
