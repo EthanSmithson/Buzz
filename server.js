@@ -106,7 +106,7 @@ app.get('/messages', async (req, res) => {
   console.log(idList);
 
 
-  const friendExists = 'SELECT Friend2 as listID FROM Friends WHERE Friend1 = ?'
+  const friendExists = 'SELECT Friend2 as listID FROM Friends WHERE Friend1 = ? UNION SELECT Friend1 as listID FROM Friends WHERE Friend2 = ?'
   const getId2 = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`;
 
 
@@ -121,9 +121,8 @@ app.get('/messages', async (req, res) => {
     })
   })
 
-
   const exists = await new Promise((resolve, reject) => {
-    db.all(friendExists, [idSQL2], (err, rows) => {
+    db.all(friendExists, [idSQL2, idSQL2], (err, rows) => {
       if (err) {
         return reject(err);
       }
@@ -160,18 +159,21 @@ app.get('/messages', async (req, res) => {
     })
   })
 
-  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm
+  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf
   FROM Post P
   INNER JOIN(
     SELECT CASE
         WHEN F.Friend1 != ${idSQL} THEN F.Friend1
         WHEN F.friend2 != ${idSQL} THEN F.Friend2
         END as userId
+        , F.confirmed as conf
     FROM Friends F
     WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
     UNION ALL
-    SELECT ${idSQL}) SubTable ON SubTable.userId = P.userId
+    SELECT ${idSQL}, 'null') SubTable ON SubTable.userId = P.userId
     INNER JOIN Users U ON U.ID = P.userId
+
+    WHERE conf = 1
     
   ORDER BY P.creationDtTm
   DESC`
@@ -210,8 +212,11 @@ app.get('/messages', async (req, res) => {
     WHEN F.Friend1 != ${idSQL} THEN F.Friend1
     WHEN F.friend2 != ${idSQL} THEN F.Friend2
     END as userId
+    , F.confirmed as conf
     FROM Friends F
-    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}) as SubTable ON SubTable.userId = U.ID
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 1
   `
 
   const friends = await new Promise((resolve, reject) => {
@@ -228,6 +233,24 @@ app.get('/messages', async (req, res) => {
 
   const friendName = friends.map(item => item.user);
   console.log('This is my Friends list: ', friendName);
+
+  // const friendCheck = `SELECT confirmed FROM Friends WHERE (F.Friend1 = ${idSQL} and F.Friend2  ${}`
+
+  // const friendExists = 'SELECT Friend2 as listId, confirmed as conf FROM Friends WHERE Friend1 = ? UNION SELECT Friend1 as listID, confirmed conf FROM Friends WHERE Friend2 = ?'
+  // const exists = await new Promise((resolve, reject) => {
+  //   db.all(friendExists, [idSQL, idSQL], (err, rows) => {
+  //     if (err) {
+  //       return reject(err);
+  //     }
+
+  //     const row6 = rows;
+  //     return resolve(row6);
+  //   })
+  // })
+
+  // const confirmList = exists.map(item => item.conf);
+  // console.log('Friends: ', confirmList);
+  console.log(renPosts)
 
 
   res.render('index', {
@@ -686,7 +709,7 @@ FROM (
   }
   else {
 
-    const friendUpdate = 'INSERT INTO Friends(Friend1, Friend2) VALUES(?, ?)'
+    const friendUpdate = `INSERT INTO Friends(Friend1, Friend2, confirmed) VALUES(?, ?, 0)`
 
     db.all(friendUpdate, [idSQL2, Id], (err, rows) => {
       if (err) {
@@ -697,6 +720,50 @@ FROM (
     res.sendStatus(200);
   }
 
+})
+
+app.get('/friendRequests', urlEncodedParser, async (req, res) => {
+  const cookie = Object.values(req.cookies).toString();
+
+  const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+  const idSQL = await new Promise((resolve, reject) => {
+    db.all(getId, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+
+  const friendsList = `SELECT U.username as user FROM Users U
+    INNER JOIN (SELECT CASE
+    WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+    WHEN F.friend2 != ${idSQL} THEN F.Friend2
+    END as userId
+    , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 1
+  `
+
+  const friends = await new Promise((resolve, reject) => {
+    db.all(friendsList, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = rows
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendName = friends.map(item => item.user);
+  console.log('working?');
 })
 
 /*function isUserNameInUse(userName){

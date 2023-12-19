@@ -1518,11 +1518,14 @@ img.img-land {
 }
 
 .subMenuNotis {
-    background-color: #c4c4c4;
+    background-color: #ececec;
     padding: 20px;
     margin: 10px;
     height: 60vh;
     width: 45vh;
+    box-shadow: 8px 10px #d4d4d4;
+    border: .7px solid #3f90e8;
+    overflow-y: scroll;
 }
 
 .subMenuNotis a {
@@ -1531,6 +1534,11 @@ img.img-land {
 
 .open-menu-notis {
     max-height:  800px;
+}
+
+.requests {
+    width: 45vh;
+    height: 25vh;
 }
 
 .subMenuWrap2 {

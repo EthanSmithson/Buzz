@@ -24,7 +24,7 @@
           <img class="profile-img" src="images/userIcon.png" onclick="openSubMenu()">
         </div>
 
-        <a class="notis" href="#" onclick="openNotis()">
+        <a class="notis" href="#" onclick="openNotis(); renderFriends()">
           <i class="fa-solid fa-bell fa-lg"></i>
         </a>
 
@@ -58,7 +58,16 @@
         <div class="subMenuWrap-notis" id="subMenuNotis">
           <div class="subMenuNotis">
             <a onclick="closeNotis()"><i class="fa-solid fa-x"></i></a>
-            <p>Notifications</p>
+            <h3>Notifications</h3>
+            <div id="requests" class="requests">
+
+            </div>
+            <div class="accountActivity">
+              <p>Activity</p>
+              <div class="activity">
+                <p>test</p>
+              </div>
+            </div>
           </div>
       </div>
 
@@ -167,7 +176,7 @@
                   if(xhr2.readyState === 4 && xhr2.status === 200) {
                     existingFriendBut1.className = "noAdd";
                     existingFriendBut1.children[0].className = "fa-solid fa-check"
-                    console.log('Working');
+                    console.log(xhr2.responseText);
                     }
                     
                   }
@@ -227,6 +236,22 @@
 
 
     xhr.send();
+
+  }
+
+  function renderFriends() {
+   const requests = document.getElementById('requests');
+   const xhr3 = new XMLHttpRequest();
+   
+   xhr3.open('GET', `http://localhost:8080/friendRequests?`, true);
+
+   xhr3.onreadystatechange = function() {
+    if(xhr3.readyState === 4 && xhr3.status === 200) {
+      requests.innerHTML = xhr3.responseText;
+      console.log('working');
+
+    }
+  }
 
   }
 
