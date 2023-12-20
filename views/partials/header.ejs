@@ -57,8 +57,10 @@
 
         <div class="subMenuWrap-notis" id="subMenuNotis">
           <div class="subMenuNotis">
-            <a onclick="closeNotis()"><i class="fa-solid fa-x"></i></a>
-            <h3>Notifications</h3>
+            <div class="heading" style=" border-bottom: 1px solid #ccc;">
+              <a onclick="closeNotis()" style="color: #fff; padding-top: 1vh;"><i class="fa-solid fa-x"></i></a>
+              <h3 style="color: #fff;">Notifications</h3>
+            </div>
             <div id="requests" class="requests">
 
             </div>
@@ -252,6 +254,7 @@
 
     }
   }
+  xhr3.send();
 
   }
 

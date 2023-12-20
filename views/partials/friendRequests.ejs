@@ -1,12 +1,17 @@
-  <% for(let i =0; i<nameList.length; i++) { %>
+  <% for(let i =0; i<friendName.length; i++) { %>
     <div id="friendRequestList" style="display: flex; margin-top: 3vh; margin-bottom: 2vh;">
-      <img class="profile-icon-search" src="images/userIcon.png">
       <div class="friendRequests">
-        <p>Friends Requests</p>
-        <div class="request">
-          <p>test</p>
+        <p style="color: #fff;">Friends Requests</p>
+        <div class="request" style="display: inline-flex; margin-left: 6vh;">
+          <img class="profile-icon-search" src="images/userIcon.png">
+          <p style="margin-left: -3vh; margin-top: 2.5vh;"><%= friendName[i]; %></p>
+          <button class="addFriendRequest" type="button" id="addback" style="width: 5vh;
+          height: 3vh;
+          background-color: #2388f5;
+          margin-top: 2vh;
+          margin-left: 3vh;
+          cursor: pointer;"><i style="color: #fff;" class="fa-sharp fa-solid fa-plus fa-lg"></i></button>
         </div>
       </div>
-        <button class="addFriendRequest" type="button" id="addback"><i class="fa-sharp fa-solid fa-plus fa-lg"></i></button>
     </div>
 <% } %>

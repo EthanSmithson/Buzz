@@ -747,7 +747,6 @@ app.get('/friendRequests', urlEncodedParser, async (req, res) => {
     FROM Friends F
     WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
     ) as SubTable ON SubTable.userId = U.ID
-    WHERE conf = 1
   `
 
   const friends = await new Promise((resolve, reject) => {
@@ -757,13 +756,16 @@ app.get('/friendRequests', urlEncodedParser, async (req, res) => {
       }
 
       const rowz2 = rows
-      console.log(rowz2);
       return resolve(rowz2);
     })
   })
 
   const friendName = friends.map(item => item.user);
-  console.log('working?');
+  console.log(friendName);
+
+  res.render('partials/friendRequests', {
+    friendName
+  })
 })
 
 /*function isUserNameInUse(userName){

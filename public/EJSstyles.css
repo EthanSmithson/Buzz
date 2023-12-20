@@ -1518,7 +1518,7 @@ img.img-land {
 }
 
 .subMenuNotis {
-    background-color: #ececec;
+    background-color: #5cabff;
     padding: 20px;
     margin: 10px;
     height: 60vh;
@@ -1536,10 +1536,10 @@ img.img-land {
     max-height:  800px;
 }
 
-.requests {
+/* .requests {
     width: 45vh;
     height: 25vh;
-}
+} */
 
 .subMenuWrap2 {
     position: absolute;
