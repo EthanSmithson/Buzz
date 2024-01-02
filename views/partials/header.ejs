@@ -1,3 +1,9 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+</head>
+
 <div class="container">
 
   <a href="/index"><img src="/images/WebsiteLogo.png" alt="Logo" class="logo"></a>
@@ -25,7 +31,7 @@
         </div>
 
         <a class="notis" href="#" onclick="openNotis(); renderFriends()">
-          <i class="fa-solid fa-bell fa-lg"></i>
+          <i id="bell" class="fa-solid fa-bell fa-lg"></i>
         </a>
 
         <div class="subMenuWrap" id="subMenu">
@@ -58,16 +64,16 @@
         <div class="subMenuWrap-notis" id="subMenuNotis">
           <div class="subMenuNotis">
             <div class="heading" style=" border-bottom: 1px solid #ccc;">
-              <a onclick="closeNotis()" style="color: #fff; padding-top: 1vh;"><i class="fa-solid fa-x"></i></a>
-              <h3 style="color: #fff;">Notifications</h3>
+              <a onclick="closeNotis()" style="color: #fff; padding-top: 1vh;"><i id="exitNotis" class="fa-solid fa-x"></i></a>
+              <h3 style="color: #fff; font-family: 'Inter', sans-serif; letter-spacing: 1px;">Notifications</h3>
             </div>
-            <div id="requests" class="requests">
-
+            <p style="color: #fff; font-family: 'Inter', sans-serif;">Friends Requests</p>
+            <div id="requests" class="requests" style="height: 15vh; padding-top: 2vh; overflow-y: scroll;">
+              
             </div>
-            <div class="accountActivity">
-              <p>Activity</p>
+            <div style="margin-top: 6vh;" class="accountActivity">
+              <p style="color: #fff; font-family: 'Inter', sans-serif;">Activity</p>
               <div class="activity">
-                <p>test</p>
               </div>
             </div>
           </div>
@@ -96,7 +102,13 @@
 
   let notiMenu = document.getElementById("subMenuNotis");
   function openNotis() {
-    notiMenu.classList.toggle("open-menu-notis");
+    if (notiMenu.classList.contains("open-menu-notis")) {
+      notiMenu.classList.remove("open-menu-notis");
+      notiMenu.classList.add("close-menu-notis");
+    } else {
+      notiMenu.classList.remove("close-menu-notis");
+      notiMenu.classList.add("open-menu-notis");
+    }
   }
 
   // window.onclick = (event) => {
@@ -110,7 +122,8 @@
   notiMenu.addEventListener('click', event => event.stopPropagation());
 
   function closeNotis() {
-    notiMenu.classList.remove("open-menu-notis")
+    notiMenu.classList.add("close-menu-notis");
+    notiMenu.classList.remove("open-menu-notis");
   }
 
 
@@ -250,13 +263,52 @@
    xhr3.onreadystatechange = function() {
     if(xhr3.readyState === 4 && xhr3.status === 200) {
       requests.innerHTML = xhr3.responseText;
-      console.log('working');
+      console.log(requests);
+
+      for (i = 0; i < requests.childElementCount; i++) {
+        const friendId = requests.children[i].children[0].children[0].children[1].value
+        const myId = requests.children[i].children[0].children[0].children[2].value
+        const requester = requests.children[i].children[0].children[0].children[3].value
+        const friendBtn =  requests.children[i].children[0].children[0].children[5];
+        console.log(friendId)
+        console.log(myId)
+        console.log('test', friendBtn);
+
+        if(friendId != myId) {
+          requests.children[i].style = "display: none";
+        }
+
+        // const addFriendBack = requests.children[i].children[0].children[0].children[4]
+
+        const curFriend = requests.children[i];
+
+        curFriend.querySelector('button.addFriendRequest').onclick = () => {
+          const xhr4 = new XMLHttpRequest();
+          xhr4.open('GET', `http://localhost:8080/addFriendBack?friend=`+ friendId + `&requesterId=` + requester, true);
+          friendBtn.className = "noAdd2";
+          friendBtn.children[0].className = "fa-solid fa-check"
+
+          xhr4.onreadystatechange = function () {
+            if(xhr4.readyState === 4 && xhr4.status === 200) {
+              console.log('Friend Added Back.');
+              
+            }
+          }
+
+          xhr4.send();
+        }
+
+      }
 
     }
   }
   xhr3.send();
 
   }
+
+  // addUserBack.addEventListener('click', function(event) {
+  //   addUserBack.target.classList.add('noAdd')
+  // })
 
   // document.getElementById('search').onclick = addUser()
   // function addUser() {

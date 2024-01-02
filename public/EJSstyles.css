@@ -177,6 +177,15 @@ nav button:hover {
     cursor: pointer;
 }
 
+.addFriendRequest {
+    width: 5vh;
+    height: 3vh;
+    background-color: #2388f5;
+    margin-top: 2.1vh;
+    margin-left: 3vh;
+    cursor: pointer;
+}
+
 .noAdd i {
     color: #fff;
     transform: rotate(360deg);
@@ -186,9 +195,20 @@ nav button:hover {
     width: 5vh;
     height: 3vh;
     background-color: #0be20b;
-    margin-top: 1.6vh;
+    margin-top: 1.4vh;
     margin-left: 3vh;
     cursor: pointer;
+    transition: all .7s;
+}
+
+.noAdd2 {
+    width: 5vh;
+    height: 3vh;
+    background-color: #0be20b;
+    margin-top: 2.5vh;
+    margin-left: 3vh;
+    cursor: pointer;
+    transition: all .7s;
 }
 
 /* .noAdd {
@@ -373,7 +393,6 @@ nav img {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18px;
 }
 
 .right-sidebar h4 {
@@ -392,8 +411,17 @@ nav img {
 
 .online-contacts {
     display: flex;
+    height: 25vh;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.online-contacts-messages {
+    display: flex;
+    height: 25vh;
+    align-items: center;
+    margin-bottom: 20px;
+    overflow-y: scroll;
 }
 
 .online-contacts .online img {
@@ -401,6 +429,21 @@ nav img {
     border-radius: 50%;
     margin-right: 15px;
     margin-left: 2px;
+    cursor: pointer;
+}
+
+.online-contacts-messages .online img {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    margin-left: 2px;
+    cursor: pointer;
+}
+
+.online-friend {
+    display: inline-flex;
+    padding-bottom: 5vh;
+    padding: .3em;
 }
 
 .online-contacts .online {
@@ -412,9 +455,37 @@ nav img {
     background: #eaeaea;
     width: 45px;
     border: 1px solid #000000;
+    margin-bottom: 12vh;
+}
+
+.online-contacts-messages .online {
+    float: right;
+    margin-right: 1.5vh;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    background: #eaeaea;
+    width: 45px;
+    border: 1px solid #000000;
+    margin-bottom: 12vh;
+}
+
+.online-contacts p {
+    margin-bottom: 13.5vh;
+    cursor: pointer;
 }
 
 .online-contacts .online::after {
+    top: unset;
+    bottom: 2;
+}
+
+.online-contacts-messages p {
+    margin-bottom: 13.5vh;
+    cursor: pointer;
+}
+
+.online-contacts-messages .online::after {
     top: unset;
     bottom: 2;
 }
@@ -426,6 +497,9 @@ nav img {
     width: 300px;
     height: 220px;
     border-radius: 15px;
+    bottom: 0;
+  background: -webkit-linear-gradient(90deg, rgba(0, 0, 0, 0.15), transparent);
+  background: linear-gradient(-90deg, rgba(0, 0, 0, 0.15), transparent);
 }
 
 .advertisement img {
@@ -720,11 +794,21 @@ nav img {
 }
 
 .message-list {
-    padding: 15px;
+    padding: 1em;
+    padding-top: .1em;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 52vh
+    height: 54vh
 }
+
+/* .block {
+    height: 9.5vh;
+    width: 19vw;
+    background-color: #599ee7;
+    margin-left: 6em;
+    margin-top: 4.5em;
+    position: absolute;
+} */
 
 .offline {
     position: relative;
@@ -766,6 +850,30 @@ nav img {
     bottom: 2;
 }
 
+
+.online-contacts-messages {
+    display: flex;
+    align-items: center;
+    margin-bottom: -14vh;
+}
+
+.online-contacts-messages .offline img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.online-contacts-messages .offline {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.online-contacts-messages .offline::after {
+    top: unset;
+    bottom: 2;
+}
+
 .main-messages-header {
     height: 50px;
     background-color: #3f90e8;
@@ -802,9 +910,35 @@ nav img {
     bottom: 2;
 }
 
+test
+
+.online-contacts-messages {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.online-contacts-messages .neutral img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.online-contacts-messages .neutral {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.online-contacts-messages .neutral::after {
+    top: unset;
+    bottom: 2;
+}
+
 .contact-message-info {
-    padding: 20px;
-    margin-left: 50px;
+    padding: 1em;
+    margin-left: 5.5em;
+    margin-top: -2.9em;
     font-size: larger;
     float: left;
 }
@@ -865,9 +999,14 @@ nav img {
     display: inline-block;
 }
 
+#bell:hover {
+    color: #d1d1d1;
+    transition: all .3s;
+}
+
 .message-bar input {
     width: 75vh;
-    margin-top: 40vh;
+    margin-top: 43vh;
     margin-left: 15vh;
     height: 22px;
     border-radius: 25px;
@@ -891,13 +1030,14 @@ nav img {
 }
 
 .form-container {
-    width: 90vh;
+    width: 45vw;
     height: 95vh;
     background-color: #e5e5e5;
-    margin-top: 50px;
+    margin-top: 4em;
     box-shadow: 10px 10px #d4d4d4;
-    position: absolute;
-    margin-left: 60vh;
+    position: relative;
+    margin-left: 29vw;
+    margin-bottom: 10vh;
 }
 
 .form-header {
@@ -983,7 +1123,7 @@ nav img {
 }
 
 .birthday-section p {
-    margin-left: 75px;
+    margin-left: 85px;
     font-size: small;
     width: 200px;
 }
@@ -1105,7 +1245,7 @@ nav img {
 
 .create-account {
     /* margin-left: 3vh; */
-    padding-left: 6vh;
+    margin-left: 3em;
 }
 
 .sign-up-border {
@@ -1117,7 +1257,7 @@ nav img {
     max-width: 100%;
 }
 
-.form-container2 {
+/* .form-container2 {
     width: 80vh;
     height: 45vh;
     background-color: #e5e5e5;
@@ -1125,7 +1265,7 @@ nav img {
     margin-top: 50px;
     box-shadow: 10px 10px #d4d4d4;
     position: relative;
-}
+} */
 
 .sign-up-err {
     margin-top: 200px;
@@ -1509,8 +1649,8 @@ img.img-land {
     top: 160%;
     right: 48vh;
     width: 80vh;
-    max-height: 0px;
     overflow: hidden;
+    opacity: 0%;
 }
 
 .subMenuWrap-notis i {
@@ -1518,7 +1658,7 @@ img.img-land {
 }
 
 .subMenuNotis {
-    background-color: #5cabff;
+    background-color: #76ade9;
     padding: 20px;
     margin: 10px;
     height: 60vh;
@@ -1533,13 +1673,25 @@ img.img-land {
 }
 
 .open-menu-notis {
-    max-height:  800px;
+    opacity: 100%;
+    transition: all .3s;
+    z-index: 999;
+}
+
+.close-menu-notis {
+    display: none;
 }
 
 /* .requests {
     width: 45vh;
     height: 25vh;
+    overflow-y: scroll;
 } */
+
+#exitNotis:hover {
+    color: #898989;
+    transition: all .3s;
+}
 
 .subMenuWrap2 {
     position: absolute;
@@ -1601,7 +1753,6 @@ img.img-land {
 }
 
 .subMenu hr {
-    height: 1.5px;
     background-color: #3a6da3;
 }
 

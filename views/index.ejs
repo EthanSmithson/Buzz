@@ -121,17 +121,22 @@
           <h4>Friends</h4>
           <a href="#">See All</a>
         </div>
-
-        <% if(typeof friendName != 'undefined') { %>
-          <% friendName.forEach(function(friendName) { %>
-            <div class="online-contacts">
-              <div class="online">
-                <img src="images/userIcon.png">
+        
+        <div class="friend-section" style="overflow-y: scroll; height: 25vh;">
+          <% if(typeof friendName != 'undefined') { %>
+            <% for(let i =0; i<friendName.length; i++) { %>
+              <div class="online-contacts" style="margin-bottom: -15vh;">
+                <div class="online-friend">
+                  <div id="seeFriendImg" class="online">
+                    <img src="images/userIcon.png">
+                  </div>
+                  <p id="seeFriendText"><%= (friendName[i]); %></p>
+                  <input id="friendID" type="hidden" value="<%= friendId[i] %>"/>
+                </div>
               </div>
-              <p><%= (friendName); %></p>
-            </div>
-            <% }) %>
-        <% } %>
+              <% } %>
+          <% } %>
+        </div>
 
         <!-- <div class="online-contacts">
           <div class="online">
@@ -176,5 +181,44 @@
 
 
   <script src="EJSapp.js"></script>
+
+  <script>
+    const friendImg = document.getElementById('seeFriendImg');
+    const friendText = document.getElementById('seeFriendText');
+    const friendId = document.getElementById('friendID').value;
+    const xhr = new XMLHttpRequest();
+
+    friendImg.onclick  = () => {
+
+      xhr.open('GET', `http://localhost:8080/seeFriend?viewFriend=` + friendId, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+
+          console.log('Working')
+          console.log(friendText);
+
+        }
+      }
+
+      xhr.send();
+    }
+
+    friendText.onclick  = () => {
+
+      xhr.open('GET', `http://localhost:8080/seeFriend?viewFriend=` + friendId, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+
+          console.log('Working')
+          console.log(friendText);
+
+        }
+      }
+
+      xhr.send();
+    }
+  </script>
 
 </html>

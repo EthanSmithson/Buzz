@@ -170,7 +170,7 @@ app.get('/messages', async (req, res) => {
     FROM Friends F
     WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
     UNION ALL
-    SELECT ${idSQL}, 'null') SubTable ON SubTable.userId = P.userId
+    SELECT ${idSQL}, 1) SubTable ON SubTable.userId = P.userId
     INNER JOIN Users U ON U.ID = P.userId
 
     WHERE conf = 1
@@ -207,7 +207,7 @@ app.get('/messages', async (req, res) => {
 
   console.log(idUsername);
 
-  const friendsList = `SELECT U.username as user FROM Users U
+  const friendsList = `SELECT U.username as user, userId FROM Users U
     INNER JOIN (SELECT CASE
     WHEN F.Friend1 != ${idSQL} THEN F.Friend1
     WHEN F.friend2 != ${idSQL} THEN F.Friend2
@@ -233,6 +233,7 @@ app.get('/messages', async (req, res) => {
 
   const friendName = friends.map(item => item.user);
   console.log('This is my Friends list: ', friendName);
+  const friendId = friends.map(item => item.userId);
 
   // const friendCheck = `SELECT confirmed FROM Friends WHERE (F.Friend1 = ${idSQL} and F.Friend2  ${}`
 
@@ -256,7 +257,8 @@ app.get('/messages', async (req, res) => {
   res.render('index', {
     renPosts,
     idUsername,
-    friendName
+    friendName,
+    friendId
   });
  });
 
@@ -738,15 +740,17 @@ app.get('/friendRequests', urlEncodedParser, async (req, res) => {
     })
   })
 
-  const friendsList = `SELECT U.username as user FROM Users U
+  const friendsList = `SELECT U.username as user, U.ID as requester, friendId FROM Users U
     INNER JOIN (SELECT CASE
     WHEN F.Friend1 != ${idSQL} THEN F.Friend1
     WHEN F.friend2 != ${idSQL} THEN F.Friend2
     END as userId
     , F.confirmed as conf
+    , F.Friend2 as friendId
     FROM Friends F
     WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
     ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 0
   `
 
   const friends = await new Promise((resolve, reject) => {
@@ -760,12 +764,54 @@ app.get('/friendRequests', urlEncodedParser, async (req, res) => {
     })
   })
 
+  // const curName = `SELECT username FROM Users WHERE ID = ${idSQL}`
+
+  // const name = await new Promise((resolve, reject) => {
+  //   db.all(curName, (err, rows) => {
+  //     if (err) {
+  //       return reject(err);
+  //     }
+
+  //     const rowz2 = rows
+  //     return resolve(rowz2);
+  //   })
+  // })
+  // const myName = name.map(item => item.username);
+  // console.log(myName)
+
+  const friendId = friends.map(item => item.friendId);
+  console.log(friendId);
+
   const friendName = friends.map(item => item.user);
   console.log(friendName);
 
+  const requester = friends.map(item => item.requester);
+
   res.render('partials/friendRequests', {
-    friendName
+    friendId,
+    idSQL,
+    friendName,
+    requester
   })
+})
+
+
+app.get('/addFriendBack', urlEncodedParser, async (req, res) => {
+  const friend = req.query.friend;
+  const requesterId = req.query.requesterId;
+  db.run(`UPDATE Friends SET confirmed = ? WHERE Friend1 = ${requesterId} AND Friend2 = ${friend}`, [1], function (err, row) {
+    if (err) {
+      throw err;
+    }
+   })
+  // console.log(friend);
+  // console.log(requesterId);
+})
+
+app.get('/seeFriend', urlEncodedParser, async (req, res) => {
+  const seeUserId = req.query.viewFriend;
+
+  console.log('this is the selected user:' + seeUserId);
 })
 
 /*function isUserNameInUse(userName){
