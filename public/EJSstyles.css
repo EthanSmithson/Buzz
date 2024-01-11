@@ -470,9 +470,10 @@ nav img {
     margin-bottom: 12vh;
 }
 
-.online-contacts p {
-    margin-bottom: 13.5vh;
+.online-contacts .textA p {
     cursor: pointer;
+    color: #000;
+    font-size: medium;
 }
 
 .online-contacts .online::after {
@@ -854,7 +855,7 @@ nav img {
 .online-contacts-messages {
     display: flex;
     align-items: center;
-    margin-bottom: -14vh;
+    margin-bottom: -16.5vh;
 }
 
 .online-contacts-messages .offline img {
@@ -1641,7 +1642,7 @@ img.img-land {
     width: 380px;
     max-height: 0px;
     overflow: hidden;
-    transition: max-height 0.1s;
+    transition: max-height 0.35s;
 }
 
 .subMenuWrap-notis {
@@ -1651,6 +1652,7 @@ img.img-land {
     width: 80vh;
     overflow: hidden;
     opacity: 0%;
+    transform: scale(0%);
 }
 
 .subMenuWrap-notis i {
@@ -1676,10 +1678,13 @@ img.img-land {
     opacity: 100%;
     transition: all .3s;
     z-index: 999;
+    transform: scale(100%);
 }
 
 .close-menu-notis {
-    display: none;
+    opacity: 0%;
+    transition: all .3s;
+    transform: scale(0%);
 }
 
 /* .requests {

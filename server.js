@@ -809,9 +809,114 @@ app.get('/addFriendBack', urlEncodedParser, async (req, res) => {
 })
 
 app.get('/seeFriend', urlEncodedParser, async (req, res) => {
+  const cookie = Object.values(req.cookies).toString();
+  const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`;
+
+  const idSQL = await new Promise((resolve, reject) => {
+    db.all(getId, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+  
   const seeUserId = req.query.viewFriend;
 
-  console.log('this is the selected user:' + seeUserId);
+  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId
+  FROM Post P
+  INNER JOIN(
+    SELECT CASE
+        WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+        WHEN F.friend2 != ${idSQL} THEN F.Friend2
+        END as userId
+        , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    UNION ALL
+    SELECT ${idSQL}, 1) SubTable ON SubTable.userId = P.userId
+    INNER JOIN Users U ON U.ID = P.userId
+
+    WHERE conf = 1
+    AND clickedId = ${seeUserId}
+    
+  ORDER BY P.creationDtTm
+  DESC`
+
+  const renPosts = await new Promise((resolve, reject) => {
+    db.all(postSQL2, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+      console.log(rows);
+      resolve(rows);
+      // const rowz2 = rows.cmt;
+      // console.log(rowz2);
+      // return resolve(rowz2);
+    })
+  })
+
+  const getUsername = `SELECT username as curUsername from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+  const idUsername = await new Promise((resolve, reject) => {
+    db.all(getUsername, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = Object.values(rows[0]).toString();
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  console.log(idUsername);
+
+  const friendsList = `SELECT U.username as user, userId FROM Users U
+    INNER JOIN (SELECT CASE
+    WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+    WHEN F.friend2 != ${idSQL} THEN F.Friend2
+    END as userId
+    , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 1
+  `
+
+  const friends = await new Promise((resolve, reject) => {
+    db.all(friendsList, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = rows
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendName = friends.map(item => item.user);
+  console.log('This is my Friends list: ', friendName);
+  const friendId = friends.map(item => item.userId);
+
+  console.log(renPosts)
+
+  const userPostId = renPosts.map(item => item.clickedId);
+  console.log("who I clicked on", userPostId);
+  console.log('this is the selected user:' , seeUserId);
+
+  res.render('seeFriend', {
+    renPosts,
+    idUsername,
+    friendName,
+    friendId
+  });
+  
+
+
 })
 
 /*function isUserNameInUse(userName){
