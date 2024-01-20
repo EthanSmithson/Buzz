@@ -79,11 +79,11 @@
           <% renPosts.forEach(function(renPost) { %>
           <div class="main-feed-post">
             <div class="posters-info">
-              <div class="profile-icon">
-                <img src="images/userIcon.png">
+              <div  class="profile-icon">
+                <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><img src="images/userIcon.png"></a>
                 <div>
                   <input value="<%= (renPost.conf); %>" type="hidden"/>
-                  <p><%= (renPost.curUsnm); %></p>
+                  <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><p><%= (renPost.curUsnm); %></p></a>
                 </div>
               </div>
             </div>
