@@ -159,7 +159,7 @@ app.get('/messages', async (req, res) => {
     })
   })
 
-  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, likes as likes
   FROM Post P
   INNER JOIN(
     SELECT CASE
@@ -234,6 +234,7 @@ app.get('/messages', async (req, res) => {
   const friendName = friends.map(item => item.user);
   console.log('This is my Friends list: ', friendName);
   const friendId = friends.map(item => item.userId);
+  const likes = friends.map(item => item.likes);
 
   // const friendCheck = `SELECT confirmed FROM Friends WHERE (F.Friend1 = ${idSQL} and F.Friend2  ${}`
 
@@ -258,7 +259,8 @@ app.get('/messages', async (req, res) => {
     renPosts,
     idUsername,
     friendName,
-    friendId
+    friendId,
+    likes
   });
  });
 
@@ -425,7 +427,7 @@ app.post('/signup', urlEncodedParser,
       }
 
       console.log("New user has been added");
-      res.redirect(301, '/signup');
+      res.redirect(301, '/landing');
 
       var selectQuery = 'SELECT * FROM Users ;'
 
@@ -719,7 +721,7 @@ FROM (
       }
     })
 
-    res.sendStatus(200);
+    res.render('partials/addedNoti');
   }
 
 })
@@ -825,7 +827,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   
   const seeUserId = req.query.viewFriend;
 
-  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId
+  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId, likes as likes
   FROM Post P
   INNER JOIN(
     SELECT CASE
@@ -901,6 +903,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   const friendName = friends.map(item => item.user);
   console.log('This is my Friends list: ', friendName);
   const friendId = friends.map(item => item.userId);
+  const likes = friends.map(item => item.likes);
 
   console.log(renPosts)
 
@@ -912,10 +915,48 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
     renPosts,
     idUsername,
     friendName,
-    friendId
+    friendId,
+    likes
   });
   
 
+
+})
+
+app.get('/postReaction' , urlEncodedParser, async (req, res) => {
+  const like = req.query.like;
+  const likedPostID = req.query.likedPostID;
+  console.log(like)
+  console.log('What I liked', likedPostID);
+
+  // const likePost = `UPDATE Post SET likes = likes + ${like} WHERE ID = ${likedPostID}`;
+
+  db.run(`UPDATE Post SET likes = likes + ${like} WHERE ID = ${likedPostID}`, function (err, row) {
+    if (err) {
+      throw err;
+    }
+   })
+
+   const numOfLikes = `SELECT Likes as likes FROM Post where ID = ${likedPostID}`;
+
+  const postLikes = await new Promise((resolve, reject) => {
+    db.all(numOfLikes, (err, row) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowLikes = row;
+      console.log(rowLikes);
+      return resolve(rowLikes);
+    })
+  })
+
+  const likes = postLikes.map(item => item.likes);
+  console.log(likes);
+
+  res.render('partials/likes', {
+    likes
+  });
 
 })
 

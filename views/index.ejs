@@ -66,7 +66,7 @@
                 <div class="my-post-icons">
                   <div class="share-attach-icons">
                     <a href="#" class="attach-icon"><i class="fa-solid fa-paperclip"></i></a>
-                    <button type="submit" class="post-icon"><i class="fa-solid fa-square-check"></i></button>
+                    <button type="submit" class="post-icon">Post&nbsp;&nbsp;<i class="fa-solid fa-square-check"></i></button>
                   </div>
                 </div>
               </fieldset>
@@ -75,40 +75,48 @@
           </div>
         </div>
 
-        <% if(typeof renPosts != 'undefined') { %>
-          <% renPosts.forEach(function(renPost) { %>
-          <div class="main-feed-post">
-            <div class="posters-info">
-              <div  class="profile-icon">
-                <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><img src="images/userIcon.png"></a>
-                <div>
-                  <input value="<%= (renPost.conf); %>" type="hidden"/>
-                  <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><p><%= (renPost.curUsnm); %></p></a>
+        <div id="listPosts">
+          <% if(typeof renPosts != 'undefined') { %>
+            <% renPosts.forEach(function(renPost) { %>
+            <div class="main-feed-post">
+              <div class="posters-info">
+                <div  class="profile-icon">
+                  <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><img src="images/userIcon.png"></a>
+                  <div>
+                    <input value="<%= (renPost.conf); %>" type="hidden"/>
+                    <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><p><%= (renPost.curUsnm); %></p></a>
+                  </div>
+                  <input id="postID" value="<%= (renPost.postID); %>" type="hidden"/>
                 </div>
               </div>
-            </div>
-            <div class="post-divider"></div>
-            <div class="userPostBox">
+              <div class="post-divider"></div>
+              <div class="userPostBox">
+                  
+                    
+  
+                     
+                        <div class="userPost">
+                          <p><%= (renPost.cmt); %></p><br>
+                        </div>
+                    
                 
-                  
-
-                   
-                      <div class="userPost">
-                        <p><%= (renPost.cmt); %></p><br>
-                      </div>
-                  
-              
+              </div>
+              <div class="like-dislike-comment">
+                <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a>
+                <a href="#" class="comment"><i class="fa-regular fa-comment"></i></a>  
+                <a id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i> <div id="numberLikes" class="numberLikes">
+                  <div class="like-circle">
+                    <div class="like-amount">
+                        <p id="likes" style="font-size: x-small; color: #fff; padding: .13em;"><%= renPost.likes %></p>
+                    </div>
+                </div>
+                </div></a>
+                <a href="#" id="down" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
+              </div>
             </div>
-            <div class="like-dislike-comment">
-              <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a>
-              <a href="#" class="comment"><i class="fa-regular fa-comment"></i></a>  
-              <a href="#" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
-              <a href="#" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
-            </div>
-          </div>
-          <% }) %>
-        <% } %>
-
+            <% }) %>
+          <% } %>
+        </div>
 
       </div>
       
@@ -185,39 +193,35 @@
   <script src="EJSapp.js"></script>
 
   <script>
+    function likePost(data) {
+      const like = document.getElementById('up');
+      const xhr = new XMLHttpRequest();
+      const postID = document.getElementById('postID');
+      const numOfLikes = document.getElementById('numberLikes');
 
-  //   function seeFriend(data) {
-  //     const friendSection = document.getElementById('friendSection');
-  //     const curFriendId = data
-  //     // for(i=0; i<friendSection.childElementCount; i++) {
-  //     //   const friendImg = friendSection.children[i].children[0].children[0];
-  //     //   const friendText = friendSection.children[i].children[0].children[1];
-  //     //   const friendIdVal = friendSection.children[i].children[0].children[2].value
-  //       // console.log(friendSection.children[i])
-  //       // console.log(friendImg);
-  //       // console.log(friendText);
-  //       // console.log(friendIdVal);
+      xhr.open('GET', `http://localhost:8080/postReaction?like=` + 1 + `&likedPostID=` + data, true);
 
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+          const likes = document.getElementById('likes');
+          const listPosts = document.getElementById('listPosts');
 
-  //     console.log(curFriendId)
-    
-  //             const xhr1 = new XMLHttpRequest();
+          console.log(listPosts);
 
-  //             xhr1.open('GET', `http://localhost:8080/seeFriend?viewFriend=` + curFriendId, true);
-    
-  //             xhr1.onreadystatechange = function() {
-  //             if(xhr1.readyState === 4 && xhr1.status === 200) {
+          for (i=0; i < listPosts.childElementCount; i++) {
+            console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
 
-  //               console.log(xhr1.responseText)
-    
-  //               console.log('Working');
-    
-  //           }
-    
-  //         } 
-  //         xhr1.send();
-  //   }
-  // // }
+            listPosts.children[i].children[3].children[2].onclick = () => {
+              listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+            }
+            
+          }
+
+          likes.innerHTML = xhr.responseText;
+        }
+      }
+      xhr.send();
+    }
   </script>
 
 </html>

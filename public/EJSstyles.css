@@ -288,7 +288,6 @@ nav img {
 }
 
 .shortcuts {
-    overflow-x: hidden;
     height: 25vh;
 }
 
@@ -525,7 +524,7 @@ nav img {
 }
 
 .create-post-back {
-    background-color: #d9d9d9;
+    background-color: #e6e6e6;
     height: 270px;
     width: 89vh;
 }
@@ -610,17 +609,45 @@ nav img {
     color: #000;
 }
 
+.hideMyAddNoti {
+    color: #fff;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s, display 0.5s;
+}
+
+.showMyAddNoti {
+    opacity: 1;
+    display: block;
+}
+
+.like-circle {
+    width: .7vw;
+    height: 1.35vh;
+    background-color: #ff0000;
+    border-radius: 45px;
+}
+
 .post-icon {
-    color: #000;
+    color: #ffffff;
     background: none;
+    width: 5vw;
+    height: 3vh;
     border: none;
     cursor: pointer;
+    background-color: #3f90e8;
+    transition: all .5s;
+}
+
+.post-icon:hover {
+    transition: all .5s;
+    transform: scale(105%);
 }
 
 .main-feed-post, .main-feed-post-2 {
     padding-top: 70px;
     margin-top: 50px;
-    background-color: #e5e5e5;
+    background-color: #f3f3f3;
 }
 
 .main-feed-post .posters-info, .main-feed-post-2 .posters-info {
@@ -814,7 +841,8 @@ nav img {
     padding-top: .1em;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 54vh
+    height: 54vh;
+    background-color: #e5e5e5;
 }
 
 /* .block {
