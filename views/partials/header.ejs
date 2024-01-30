@@ -26,6 +26,10 @@
           </div>
         </div>
 
+        <div id="added-friend-noti">
+
+        </div>
+
         <div class="profile-icon-head prof-online">
           <img class="profile-img" src="images/userIcon.png" onclick="openSubMenu()">
         </div>
@@ -185,6 +189,7 @@
               // curChild.children[3].onclick = () => {
                 curChild.querySelector('button.addFriend').onclick = () =>{
                   const xhr2 = new XMLHttpRequest();
+                  const noti = document.getElementById('added-friend-noti');
                   xhr2.open('GET', `http://localhost:8080/addFriend?uId=` + childVal, true);
 
                   xhr2.onreadystatechange = function() {
@@ -192,6 +197,14 @@
                     existingFriendBut1.className = "noAdd";
                     existingFriendBut1.children[0].className = "fa-solid fa-check"
                     console.log(xhr2.responseText);
+                    noti.innerHTML = xhr2.responseText;
+                    // noti.children[0].style.add('opacity: 100%; transition: all 1s');
+                    console.log(noti.children[0].children[0])
+                    noti.children[0].children[0].classList.add('showMyAddNoti');
+                    setTimeout(function() {removeNoti(); }, 2000);
+                    function removeNoti() {
+                      noti.children[0].children[0].classList.remove('showMyAddNoti');
+                    }
                     }
                     
                   }

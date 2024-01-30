@@ -159,7 +159,7 @@ app.get('/messages', async (req, res) => {
     })
   })
 
-  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, likes as likes
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, likes as likes, dislikes as dislikes
   FROM Post P
   INNER JOIN(
     SELECT CASE
@@ -235,6 +235,7 @@ app.get('/messages', async (req, res) => {
   console.log('This is my Friends list: ', friendName);
   const friendId = friends.map(item => item.userId);
   const likes = friends.map(item => item.likes);
+  const dislikes = friends.map(item => item.dislikes);
 
   // const friendCheck = `SELECT confirmed FROM Friends WHERE (F.Friend1 = ${idSQL} and F.Friend2  ${}`
 
@@ -260,7 +261,8 @@ app.get('/messages', async (req, res) => {
     idUsername,
     friendName,
     friendId,
-    likes
+    likes,
+    dislikes
   });
  });
 
@@ -923,7 +925,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
 
 })
 
-app.get('/postReaction' , urlEncodedParser, async (req, res) => {
+app.get('/likePost' , urlEncodedParser, async (req, res) => {
   const like = req.query.like;
   const likedPostID = req.query.likedPostID;
   console.log(like)
@@ -937,25 +939,244 @@ app.get('/postReaction' , urlEncodedParser, async (req, res) => {
     }
    })
 
-   const numOfLikes = `SELECT Likes as likes FROM Post where ID = ${likedPostID}`;
+   const cookie = Object.values(req.cookies).toString();
+  const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
 
-  const postLikes = await new Promise((resolve, reject) => {
-    db.all(numOfLikes, (err, row) => {
+  const idSQL = await new Promise((resolve, reject) => {
+    db.all(getId, (err, rows) => {
       if (err) {
         return reject(err);
       }
 
-      const rowLikes = row;
-      console.log(rowLikes);
-      return resolve(rowLikes);
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
     })
   })
 
-  const likes = postLikes.map(item => item.likes);
-  console.log(likes);
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, likes as likes
+  FROM Post P
+  INNER JOIN(
+    SELECT CASE
+        WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+        WHEN F.friend2 != ${idSQL} THEN F.Friend2
+        END as userId
+        , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    UNION ALL
+    SELECT ${idSQL}, 1) SubTable ON SubTable.userId = P.userId
+    INNER JOIN Users U ON U.ID = P.userId
+
+    WHERE conf = 1
+    AND postID = ${likedPostID}
+    
+  ORDER BY P.creationDtTm
+  DESC`
+
+  const renPosts = await new Promise((resolve, reject) => {
+    db.all(postSQL2, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+      console.log(rows);
+      resolve(rows);
+      // const rowz2 = rows.cmt;
+      // console.log(rowz2);
+      // return resolve(rowz2);
+    })
+  })
+
+  const getUsername = `SELECT username as curUsername from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+  const idUsername = await new Promise((resolve, reject) => {
+    db.all(getUsername, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = Object.values(rows[0]).toString();
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendsList = `SELECT U.username as user, userId FROM Users U
+    INNER JOIN (SELECT CASE
+    WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+    WHEN F.friend2 != ${idSQL} THEN F.Friend2
+    END as userId
+    , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 1
+  `
+
+  const friends = await new Promise((resolve, reject) => {
+    db.all(friendsList, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = rows
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendName = friends.map(item => item.user);
+  console.log('This is my Friends list: ', friendName);
+  const friendId = friends.map(item => item.userId);
+  const likes = renPosts.map(item => item.likes);
+
+  //  const numOfLikes = `SELECT Likes as likes FROM Post where ID = ${likedPostID}`;
+
+  // const postLikes = await new Promise((resolve, reject) => {
+  //   db.all(numOfLikes, (err, row) => {
+  //     if (err) {
+  //       return reject(err);
+  //     }
+
+  //     const rowLikes = row;
+  //     console.log(rowLikes);
+  //     return resolve(rowLikes);
+  //   })
+  // })
+
+  // const likes = postLikes.map(item => item.likes);
+  // console.log(likes);
 
   res.render('partials/likes', {
     likes
+  });
+
+})
+
+
+
+app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
+  const dislike = req.query.like;
+  const likedPostID = req.query.likedPostID;
+  // console.log(like)
+  console.log('What I liked', likedPostID);
+
+  // const likePost = `UPDATE Post SET likes = likes + ${like} WHERE ID = ${likedPostID}`;
+
+  db.run(`UPDATE Post SET dislikes = dislikes + ${dislike} WHERE ID = ${likedPostID}`, function (err, row) {
+    if (err) {
+      throw err;
+    }
+   })
+
+   const cookie = Object.values(req.cookies).toString();
+  const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+  const idSQL = await new Promise((resolve, reject) => {
+    db.all(getId, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, dislikes as dislikes
+  FROM Post P
+  INNER JOIN(
+    SELECT CASE
+        WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+        WHEN F.friend2 != ${idSQL} THEN F.Friend2
+        END as userId
+        , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    UNION ALL
+    SELECT ${idSQL}, 1) SubTable ON SubTable.userId = P.userId
+    INNER JOIN Users U ON U.ID = P.userId
+
+    WHERE conf = 1
+    AND postID = ${likedPostID}
+    
+  ORDER BY P.creationDtTm
+  DESC`
+
+  const renPosts = await new Promise((resolve, reject) => {
+    db.all(postSQL2, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+      console.log(rows);
+      resolve(rows);
+      // const rowz2 = rows.cmt;
+      // console.log(rowz2);
+      // return resolve(rowz2);
+    })
+  })
+
+  const getUsername = `SELECT username as curUsername from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+  const idUsername = await new Promise((resolve, reject) => {
+    db.all(getUsername, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = Object.values(rows[0]).toString();
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendsList = `SELECT U.username as user, userId FROM Users U
+    INNER JOIN (SELECT CASE
+    WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+    WHEN F.friend2 != ${idSQL} THEN F.Friend2
+    END as userId
+    , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 1
+  `
+
+  const friends = await new Promise((resolve, reject) => {
+    db.all(friendsList, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = rows
+      console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendName = friends.map(item => item.user);
+  console.log('This is my Friends list: ', friendName);
+  const friendId = friends.map(item => item.userId);
+  const dislikes = renPosts.map(item => item.dislikes);
+
+  //  const numOfLikes = `SELECT Likes as likes FROM Post where ID = ${likedPostID}`;
+
+  // const postLikes = await new Promise((resolve, reject) => {
+  //   db.all(numOfLikes, (err, row) => {
+  //     if (err) {
+  //       return reject(err);
+  //     }
+
+  //     const rowLikes = row;
+  //     console.log(rowLikes);
+  //     return resolve(rowLikes);
+  //   })
+  // })
+
+  // const likes = postLikes.map(item => item.likes);
+  // console.log(likes);
+
+  res.render('partials/dislikes', {
+    dislikes
   });
 
 })
