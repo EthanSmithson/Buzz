@@ -829,7 +829,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   
   const seeUserId = req.query.viewFriend;
 
-  const postSQL2 = `SELECT P.ID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId, likes as likes
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId, likes as likes, dislikes as dislikes
   FROM Post P
   INNER JOIN(
     SELECT CASE
@@ -906,6 +906,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   console.log('This is my Friends list: ', friendName);
   const friendId = friends.map(item => item.userId);
   const likes = friends.map(item => item.likes);
+  const dislikes = friends.map(item => item.dislikes);
 
   console.log(renPosts)
 
@@ -918,7 +919,8 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
     idUsername,
     friendName,
     friendId,
-    likes
+    likes,
+    dislikes
   });
   
 

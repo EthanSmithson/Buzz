@@ -4,6 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
     <title>Home | Buzz</title>
@@ -22,10 +26,37 @@
         <div class="main-links">
           <a href="/signup"><i class="fa-regular fa-pen-to-square"></i>Sign Up / Register!</a>
           <a href="#"><i class="fa-regular fa-newspaper fa-1x"></i>Latest News</a>
-          <a href="#"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
+          <a style="cursor: pointer;" onclick="openSett()"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
           <a href="#"><i class="fa-solid fa-user-group fa-1x"></i>Friends</a>
           <a href="#"><i class="fa-solid fa-shop fa-1x"></i>Buzz Market</a>
           <a href="#">See More</a>
+        </div>
+
+        <div class="subMenuWrap-sett close-menu-sett" id="subMenuSett">
+          <div class="subMenuSett">
+            <div class="sett-sections">
+              <div class="tabs">
+                <div class="tab1">
+                  <h3>General</h3>
+                </div>
+                <div class="tab1">
+                  <h3>Notifications</h3>
+                </div>
+                <div class="tab1">
+                  <h3>Profile</h3>
+                </div>
+                <div class="tab1">
+                  <h3>Theme</h3>
+                </div>
+                <div class="tab1">
+                  <h3>Privacy</h3>
+                </div>
+              </div>
+              <div class="setts">
+
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="shortcuts-header">
@@ -64,9 +95,9 @@
                 </div>
 
                 <div class="my-post-icons">
-                  <div class="share-attach-icons">
+                  <div class="share-attach-icons" style="display: inline-flex;">
                     <a href="#" class="attach-icon"><i class="fa-solid fa-paperclip"></i></a>
-                    <button type="submit" class="post-icon">Post&nbsp;&nbsp;<i class="fa-solid fa-square-check"></i></button>
+                    <button type="submit" class="post-icon"><p>Post</p>&nbsp;&nbsp;<i style="padding-top: .7vh;" class="fa-solid fa-square-check"></i></button>
                   </div>
                 </div>
               </fieldset>
@@ -104,14 +135,22 @@
               <div class="like-dislike-comment">
                 <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a>
                 <a href="#" class="comment"><i class="fa-regular fa-comment"></i></a>  
-                <a id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i> <div id="numberLikes" class="numberLikes">
+                <a id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
+                <div id="numberLikes" class="numberLikes">
                   <div class="like-circle">
-                    <div class="like-amount">
-                        <p id="likes" style="font-size: x-small; color: #fff; padding: .13em;"><%= renPost.likes %></p>
+                      <div class="like-amount">
+                          <p id="likes-<%= (renPost.postID); %>" style="font-size: x-small; color: #fff; padding: .13em;"><%= renPost.likes %></p>
+                      </div>
                     </div>
                 </div>
-                </div></a>
-                <a href="#" id="down" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
+                <a id="down" onclick="dislikePost('<%= (renPost.postID); %>')" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
+                <div id="numberLikes" class="numberDislikes">
+                  <div class="like-circle">
+                      <div class="like-amount">
+                        <p id="dislikes-<%= (renPost.postID); %>" style="font-size: x-small; color: #fff; padding: .13em;"><%= renPost.dislikes %></p>
+                      </div>
+                    </div>
+                </div>
               </div>
             </div>
             <% }) %>
@@ -127,7 +166,7 @@
 
         <div class="sub-title">
           <h4>Friends</h4>
-          <a href="#">See All</a>
+          <a href="/messages">See All</a>
         </div>
         
         <div id="friendSection" class="friend-section" style="overflow-y: scroll; height: 25vh;">
@@ -167,8 +206,36 @@
           <a href="#">See All</a>
         </div>
         
-        <div class="advertisement">
-          <div class="ad-1">
+          <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-1">
+                <img src="images/bike-for-sale.png">
+                <h3>Blue Mountain Bike <i>$200.00</i></h3>
+              </div>
+            </div>
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-2">
+                <img src="images/ad-2.png">
+                <h3>Angleton Sofa Sandstone <i>$350.00</i></h3>
+              </div>
+            </div>
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-3">
+                <img src="images/ad-3.png">
+                <h3>Logitech Mouse <i>$59.99</i></h3>
+              </div>
+            </div>
+            </div>
+        
+            <!-- If we need navigation buttons -->
+            <div id="prev" class="swiper-button-prev"></div>
+            <div id="next" class="swiper-button-next"></div>
+        
+        </div>
+          <!-- <div class="ad-1">
             <img src="images/bike-for-sale.png">
             <h3>Blue Mountain Bike <i>$200.00</i></h3>
           </div>
@@ -179,8 +246,7 @@
           <div class="ad-3">
             <img src="images/ad-3.png">
             <h3>Logitech Mouse <i>$59.99</i></h3>
-          </div>
-        </div>
+          </div> -->
 
 
       </div>
@@ -192,35 +258,139 @@
 
   <script src="EJSapp.js"></script>
 
-  <script>
-    function likePost(data) {
-      const like = document.getElementById('up');
-      const xhr = new XMLHttpRequest();
-      const postID = document.getElementById('postID');
-      const numOfLikes = document.getElementById('numberLikes');
+  <style>
+    .swiper-button-prev, .swiper-button-next {
+    height: 100%;
+    width: 4%;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+}
+  </style>
 
-      xhr.open('GET', `http://localhost:8080/postReaction?like=` + 1 + `&likedPostID=` + data, true);
+  <script>
+
+const swiper = new Swiper('.swiper', {
+    // Optional parameters
+    spaceBetween: 15,
+    slidesPerView: 1,
+    loop: true,
+    freemode: true,
+    speed: 1000,
+  
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+
+    
+    const listPosts = document.getElementById('listPosts');
+
+    //  for (i=0; i < listPosts.childElementCount; i++) {
+    //         // console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+    //         const postID = listPosts.children[i].children[0].children[0].children[2].value;
+    //         const what = listPosts.children[i].children[3].children[2];
+    //         // var numOfLikes = listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0];
+
+    //         listPosts.children[i].children[3].children[2].onclick = () => {
+    //           const xhr = new XMLHttpRequest();
+    //           xhr.open('GET', `http://localhost:8080/postReaction?like=` + 1 + `&likedPostID=` + postID, true);
+
+    //         xhr.onreadystatechange = function() {
+    //           if(xhr.readyState === 4 && xhr.status === 200) {
+    //             listPosts.innerHTML = xhr.responseText;
+    //             console.log(listPosts);
+    //             // console.log(numOfLikes);
+    //             console.log(what);
+    //             console.log(postID);
+    //             console.log(xhr.responseText);
+    //             }
+              
+    //           }
+    //           xhr.send();
+    //         }
+    //       }
+      
+    function likePost(data) {
+      const likes = document.getElementById('likes-'+data);
+      console.log(data);
+      // const like = document.getElementById('up');
+      const xhr = new XMLHttpRequest();
+      // const postID = document.getElementById('postID');
+      // const numOfLikes = document.getElementById('numberLikes');
+
+      xhr.open('GET', `http://localhost:8080/likePost?like=` + 1 + `&likedPostID=` + data, true);
 
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4 && xhr.status === 200) {
-          const likes = document.getElementById('likes');
-          const listPosts = document.getElementById('listPosts');
+          
 
           console.log(listPosts);
+          console.log(likes);
 
-          for (i=0; i < listPosts.childElementCount; i++) {
-            console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
 
-            listPosts.children[i].children[3].children[2].onclick = () => {
-              listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
-            }
+
+          // for (i=0; i < listPosts.childElementCount; i++) {
+          //   console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+
+          //   listPosts.children[i].children[3].children[2].onclick = () => {
+          //     listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+          //   }
             
-          }
+          // }
 
           likes.innerHTML = xhr.responseText;
         }
       }
       xhr.send();
+    }
+
+    function dislikePost(data) {
+      const dislikes = document.getElementById('dislikes-'+data);
+      console.log(data);
+      // const like = document.getElementById('up');
+      const xhr = new XMLHttpRequest();
+      // const postID = document.getElementById('postID');
+      // const numOfLikes = document.getElementById('numberLikes');
+
+      xhr.open('GET', `http://localhost:8080/dislikePost?like=` + 1 + `&likedPostID=` + data, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+          
+
+          console.log(listPosts);
+          console.log(dislikes);
+
+
+
+          // for (i=0; i < listPosts.childElementCount; i++) {
+          //   console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+
+          //   listPosts.children[i].children[3].children[2].onclick = () => {
+          //     listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+          //   }
+            
+          // }
+
+          dislikes.innerHTML = xhr.responseText;
+        }
+      }
+      xhr.send();
+    }
+
+    const sett = document.getElementById('subMenuSett')
+
+    function openSett() {
+      if (sett.classList.contains("open-menu-sett")) {
+        sett.classList.remove("open-menu-sett");
+        sett.classList.add("close-menu-sett");
+    } else {
+      sett.classList.remove("close-menu-sett");
+      sett.classList.add("open-menu-sett");
+    }
     }
   </script>
 

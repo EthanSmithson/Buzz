@@ -20,3 +20,19 @@ window.onclick = function(event) {
         }
       }
 }
+
+
+// const swiper = new Swiper('.swiper', {
+//   // Optional parameters
+//   spaceBetween: 15,
+//   slidesPerView: 2,
+//   loop: true,
+//   freemode: true,
+//   speed: 1000,
+
+//   // Navigation arrows
+//   navigation: {
+//     nextEl: '.swiper-button-next',
+//     prevEl: '.swiper-button-prev',
+//   },
+// });

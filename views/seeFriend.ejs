@@ -4,6 +4,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
     <title>Home | Buzz</title>
@@ -66,7 +70,7 @@
                 <div class="my-post-icons">
                   <div class="share-attach-icons" style="display: inline-flex;">
                     <a href="#" class="attach-icon"><i class="fa-solid fa-paperclip"></i></a>
-                    <button type="submit" class="post-icon"><p>Post</p>&nbsp;&nbsp;<i class="fa-solid fa-square-check"></i></button>
+                    <button type="submit" class="post-icon"><p>Post</p>&nbsp;&nbsp;<i style="padding-top: .7vh;" class="fa-solid fa-square-check"></i></button>
                   </div>
                 </div>
               </fieldset>
@@ -135,7 +139,7 @@
 
         <div class="sub-title">
           <h4>Friends</h4>
-          <a href="#">See All</a>
+          <a href="/messages">See All</a>
         </div>
         
         <div id="friendSection" class="friend-section" style="overflow-y: scroll; height: 25vh;">
@@ -175,8 +179,36 @@
           <a href="#">See All</a>
         </div>
         
-        <div class="advertisement">
-          <div class="ad-1">
+          <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-1">
+                <img src="images/bike-for-sale.png">
+                <h3>Blue Mountain Bike <i>$200.00</i></h3>
+              </div>
+            </div>
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-2">
+                <img src="images/ad-2.png">
+                <h3>Angleton Sofa Sandstone <i>$350.00</i></h3>
+              </div>
+            </div>
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-3">
+                <img src="images/ad-3.png">
+                <h3>Logitech Mouse <i>$59.99</i></h3>
+              </div>
+            </div>
+            </div>
+        
+            <!-- If we need navigation buttons -->
+            <div id="prev" class="swiper-button-prev"></div>
+            <div id="next" class="swiper-button-next"></div>
+        
+        </div>
+          <!-- <div class="ad-1">
             <img src="images/bike-for-sale.png">
             <h3>Blue Mountain Bike <i>$200.00</i></h3>
           </div>
@@ -187,8 +219,7 @@
           <div class="ad-3">
             <img src="images/ad-3.png">
             <h3>Logitech Mouse <i>$59.99</i></h3>
-          </div>
-        </div>
+          </div> -->
 
 
       </div>
@@ -200,7 +231,32 @@
 
   <script src="EJSapp.js"></script>
 
+  <style>
+    .swiper-button-prev, .swiper-button-next {
+    height: 100%;
+    width: 4%;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+}
+  </style>
+
   <script>
+
+const swiper = new Swiper('.swiper', {
+    // Optional parameters
+    spaceBetween: 15,
+    slidesPerView: 1,
+    loop: true,
+    freemode: true,
+    speed: 1000,
+  
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
 
     
     const listPosts = document.getElementById('listPosts');
