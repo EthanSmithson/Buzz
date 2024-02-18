@@ -4,32 +4,86 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Lato:wght@700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.js" integrity="sha512-FSNQjUUq97PtDnAJyMlBTH8EhV4o5X5FLVbzS9ttrdEVVbmrssJBh/PgXFQbxS+6yYx5n5irOj7de6Th0TRQZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <title>Home | Buzz</title>
   </head>
 
 
   <body>
-    <header>
+    <header id="header">
         <%- include('partials/header'); %>  
     </header>
 
 
-    <div class="activityfeed">
+    <div id="activity" class="activityfeed">
 
-      <div class="left-sidebar">
+      <div id="left" class="left-sidebar">
         <div class="main-links">
           <a href="/signup"><i class="fa-regular fa-pen-to-square"></i>Sign Up / Register!</a>
           <a href="#"><i class="fa-regular fa-newspaper fa-1x"></i>Latest News</a>
-          <a href="#"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
-          <a href="#"><i class="fa-solid fa-user-group fa-1x"></i>Friends</a>
+          <a style="cursor: pointer;" onclick="openSett()"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
+          <a href="/messages"><i class="fa-solid fa-user-group fa-1x"></i>Friends</a>
           <a href="#"><i class="fa-solid fa-shop fa-1x"></i>Buzz Market</a>
           <a href="#">See More</a>
+        </div>
+
+        <div class="subMenuWrap-sett close-menu-sett" id="subMenuSett">
+          <div class="subMenuSett">
+            <div class="sett-sections">
+              <div class="tabs">
+                <div id="vertical-line" class="vertical-line"></div>
+                <div id="tab1" class="tab1">
+                  <h3>General</h3>
+                </div>
+                <div id="tab2" class="tab2">
+                  <h3>Notifications</h3>
+                </div>
+                <div id="tab3" class="tab3">
+                  <h3>Profile</h3>
+                </div>
+                <div id="tab4" class="tab4">
+                  <h3>Theme</h3>
+                </div>
+                <div id="tab5" class="tab5">
+                  <h3>Privacy</h3>
+                </div>
+              </div>
+              <div class="setts">
+                <div class="exit-setts">
+                  <a onclick="closeSetts()" style="color: #3f90e8; padding-top: 1vh; position: absolute; cursor: pointer; margin-left: 27vw;"><i id="exitSetts" class="fa-solid fa-x"></i></a>
+                </div>
+                <div id="setts-gen" class="setts-gen">
+                  <p>test</p>
+                </div>
+                <div id="setts-noti" class="setts-noti">
+                  <p>Emails</p>
+                  <p>SMS</p>
+                  <p>Updates</p>
+                </div>
+                <div id="setts-prof" class="setts-prof">
+                  <p>Profile Image</p>
+                  <p>Username</p>
+                  <p>Password</p>
+                </div>
+                <div id="setts-theme" class="setts-theme">
+                  <p>display:</p>
+                  <i class="fa-solid fa-moon fa"></i>
+                  <i class="fa-solid fa-sun fa"></i>
+                </div>
+                <div id="setts-priv" class="setts-priv">
+                  <p>test</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="shortcuts-header">
@@ -42,7 +96,7 @@
         </div>
       </div>
 
-      <div class="main-feed">
+      <div id="main" class="main-feed">
         <div class="create-post-back">
           <div class="create-post">
             <div class="main-sub-title">
@@ -85,10 +139,10 @@
             <div class="main-feed-post">
               <div class="posters-info">
                 <div  class="profile-icon">
-                  <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><img src="images/userIcon.png"></a>
+                  <a href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><img src="images/userIcon.png"></a>
                   <div>
                     <input value="<%= (renPost.conf); %>" type="hidden"/>
-                    <a href="http://localhost:8080/seeFriend?viewFriend=<%= friendId %>"><p><%= (renPost.curUsnm); %></p></a>
+                    <a href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><p><%= (renPost.curUsnm); %></p></a>
                   </div>
                   <input id="postID" value="<%= (renPost.postID); %>" type="hidden"/>
                 </div>
@@ -107,7 +161,7 @@
               </div>
               <div class="like-dislike-comment">
                 <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a>
-                <a href="#" class="comment"><i class="fa-regular fa-comment"></i></a>  
+                <a id="comment" onclick="messageThread()" class="comment"><i class="fa-regular fa-comment"></i></a>  
                 <a id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
                 <div id="numberLikes" class="numberLikes">
                   <div class="like-circle">
@@ -132,7 +186,7 @@
 
       </div>
       
-      <div class="right-sidebar">
+      <div id="right" class="right-sidebar">
         <div class="section-title">
           <h3>Activity</h3>
         </div>
@@ -223,6 +277,38 @@
 
 
       </div>
+
+      <!-- <div class="subMenuWrap-Thread close-menu-thread" id="subMenuThread">
+        <div class="subMenuThread">
+          <div class="thread-container">
+
+          </div>
+        </div>
+      </div> -->
+      <div style="position: fixed;" id="sideThread" class="sideThread hiddenThread">
+        <div id="innerThread" class="sideThread">
+            <div class="thread-title">
+              <p>Message Thread</p>
+            </div>
+            <div class="message-box">
+
+              <div class="message-input">
+                <input id="threadText" type="text" placeholder="What's up?"/>
+                <button onclick="postThread(document.getElementById('threadText').value)"><i class="fa-solid fa-arrow-up"></i></button>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div style="position: fixed;" id="sideNav" class="sideNav hiddenNavbar">
+      <div class="sideHome">
+          <ul>
+              <li><a onclick="viewHome()"><i class="fa-solid fa-house fa-lg"></i></a></li>
+              <li><a onclick="viewProjects()"><i class="fa-solid fa-diagram-project fa-lg"></i></a></li>
+              <li><a onclick="viewContact()"><i class="fa-solid fa-message fa-lg"></i></a></li>
+          </ul>
+      </div>
+  </div> -->
       
     </div>
 
@@ -353,6 +439,215 @@ const swiper = new Swiper('.swiper', {
       }
       xhr.send();
     }
+
+    const sett = document.getElementById('subMenuSett');
+    const notis = document.getElementById('subMenuNotis');
+
+    function openSett() {
+      if (sett.classList.contains("open-menu-sett")) {
+        sett.classList.remove("open-menu-sett");
+        sett.classList.add("close-menu-sett");
+    } else {
+      sett.classList.remove("close-menu-sett");
+      sett.classList.add("open-menu-sett");
+      notis.classList.remove("open-menu-notis");
+      sett1.style.display = 'block';
+      sett2.style.display = 'none';
+      sett3.style.display = 'none';
+      sett4.style.display = 'none';
+      sett5.style.display = 'none';
+      anime({
+      targets: '#vertical-line',
+      translateY: 0,
+      easing: 'linear',
+      duration: 150
+    });
+    }
+    }
+
+    const vert = document.getElementById('vertical-line');
+    const tab1 = document.getElementById('tab1');
+    const tab2 = document.getElementById('tab2');
+    const tab3 = document.getElementById('tab3');
+    const tab4 = document.getElementById('tab4');
+    const tab5 = document.getElementById('tab5');
+
+    const sett1 = document.getElementById('setts-gen');
+    const sett2 = document.getElementById('setts-noti');
+    const sett3 = document.getElementById('setts-prof');
+    const sett4 = document.getElementById('setts-theme');
+    const sett5 = document.getElementById('setts-priv');
+
+    tab1.onclick = () => {
+      console.log(tab1.getBoundingClientRect());
+          anime({
+      targets: '#vertical-line',
+      translateY: 0,
+      easing: 'linear',
+      duration: 150
+    });
+    sett1.style.display = 'block';
+    sett2.style.display = 'none';
+    sett3.style.display = 'none';
+    sett4.style.display = 'none';
+    sett5.style.display = 'none';
+    }
+    tab2.onclick = () => {
+      console.log(tab2.getBoundingClientRect());
+          anime({
+      targets: '#vertical-line',
+      translateY: 136,
+      easing: 'linear',
+      duration: 150
+    });
+    sett2.style.display = 'block';
+    sett1.style.display = 'none';
+    sett3.style.display = 'none';
+    sett4.style.display = 'none';
+    sett5.style.display = 'none';
+    }
+    tab3.onclick = () => {
+      console.log(tab3.getBoundingClientRect());
+          anime({
+      targets: '#vertical-line',
+      translateY: 272,
+      easing: 'linear',
+      duration: 150
+    });
+    sett3.style.display = 'block';
+    sett1.style.display = 'none';
+    sett2.style.display = 'none';
+    sett4.style.display = 'none';
+    sett5.style.display = 'none';
+    }
+    tab4.onclick = () => {
+      console.log(tab4.getBoundingClientRect());
+          anime({
+      targets: '#vertical-line',
+      translateY: 410,
+      easing: 'linear',
+      duration: 150
+    });
+    sett4.style.display = 'block';
+    sett1.style.display = 'none';
+    sett2.style.display = 'none';
+    sett3.style.display = 'none';
+    sett5.style.display = 'none';
+    }
+    tab5.onclick = () => {
+      console.log(tab5.getBoundingClientRect());
+          anime({
+      targets: '#vertical-line',
+      translateY: 546,
+      easing: 'linear',
+      duration: 150
+    });
+    sett5.style.display = 'block';
+    sett1.style.display = 'none';
+    sett2.style.display = 'none';
+    sett3.style.display = 'none';
+    sett4.style.display = 'none';
+    }
+
+    function closeSetts() {
+      if (sett.classList.contains("open-menu-sett")) {
+        sett.classList.remove("open-menu-sett");
+        sett.classList.add("close-menu-sett");
+    } else {
+      sett.classList.remove("close-menu-sett");
+      sett.classList.add("open-menu-sett");
+    }
+    }
+
+    const comment = document.getElementById('comment');
+    const sideThread = document.getElementById('sideThread');
+    const innerThread = document.getElementById('innerThread');
+    // const sideNav = document.getElementById('sideNav');
+
+    function messageThread() {
+    if (sideThread.classList.contains('hiddenThread')) {
+      sideThread.classList.remove('hiddenThread');
+      sideThread.classList.add('showThread');
+    } else {
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+    }
+
+    // if (sideNav.classList.contains('hiddenNavbar')) {
+    //     sideNav.classList.remove('hiddenNavbar');
+    //     sideNav.classList.add('showNavbar');
+    // } else {
+    //     sideNav.classList.add('hiddenNavbar');
+    //     sideNav.classList.remove('showNavbar');
+    // }
+}
+
+const left = document.getElementById('left');
+left.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const main = document.getElementById('left');
+main.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const right = document.getElementById('right');
+right.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const activity = document.getElementById('activity');
+activity.onclick = function(e) {
+  if(activity = e.target){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const header = document.getElementById('header');
+header.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+// window.onclick = (event) => {
+//   if(!event.target.matches(comment)) {
+//     if(sideThread.classList.contains("showThread")) {
+//       sideThread.classList.remove("showThread");
+//       sideThread.classList.add("hiddenThread");
+//     }
+//   }
+// }
+
+    function postThread(data) {
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', `http://localhost:8080/messageThread?threadMessage=` + data, true);
+
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+            
+            console.log('working');
+            // dislikes.innerHTML = xhr.responseText;
+          }
+        }
+        xhr.send();
+    }
+
+    
   </script>
 
 </html>

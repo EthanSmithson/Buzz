@@ -25,6 +25,9 @@ const express = require("express"),
 app.use(express.json());
 app.use(cookieParser());
 
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, { cors: { origin: "*" }});
+
 //setting view engine to ejs
 app.set("view engine", "ejs");
 
@@ -132,8 +135,8 @@ app.get('/messages', async (req, res) => {
     })
   })
 
-  console.log(idSQL2);
-  console.log(idList);
+  // console.log(idSQL2);
+  // console.log(idList);
   const existsList = exists.map(item => item.listID);
   console.log('These are my current friends:' + existsList);
 
@@ -183,7 +186,7 @@ app.get('/messages', async (req, res) => {
       if (err) {
         return reject(err);
       }
-      console.log(rows);
+      // console.log(rows);
       resolve(rows);
       // const rowz2 = rows.cmt;
       // console.log(rowz2);
@@ -200,12 +203,12 @@ app.get('/messages', async (req, res) => {
       }
 
       const rowz2 = Object.values(rows[0]).toString();
-      console.log(rowz2);
+      // console.log(rowz2);
       return resolve(rowz2);
     })
   })
 
-  console.log(idUsername);
+  // console.log(idUsername);
 
   const friendsList = `SELECT U.username as user, userId FROM Users U
     INNER JOIN (SELECT CASE
@@ -226,13 +229,13 @@ app.get('/messages', async (req, res) => {
       }
 
       const rowz2 = rows
-      console.log(rowz2);
+      // console.log(rowz2);
       return resolve(rowz2);
     })
   })
 
   const friendName = friends.map(item => item.user);
-  console.log('This is my Friends list: ', friendName);
+  // console.log('This is my Friends list: ', friendName);
   const friendId = friends.map(item => item.userId);
   const likes = friends.map(item => item.likes);
   const dislikes = friends.map(item => item.dislikes);
@@ -253,7 +256,7 @@ app.get('/messages', async (req, res) => {
 
   // const confirmList = exists.map(item => item.conf);
   // console.log('Friends: ', confirmList);
-  console.log(renPosts)
+  // console.log(renPosts)
 
 
   res.render('index', {
@@ -1219,3 +1222,58 @@ app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
     //         });
     //     });
     // });
+
+    app.get('/openMessageThread', urlEncodedParser, async (req, res) => {
+      const threadPostId = req.query.threadPostId;
+      const threadCmt = req.query.threadCmt;
+
+      // const getThreadCmt = `SELECT comment FROM Threads WHERE postId = ${threadPostId}`;
+
+      console.log(threadPostId);
+      console.log(threadCmt);
+
+      res.sendStatus(200);
+    })
+
+    app.get('/messageThread', urlEncodedParser, async (req, res) => {
+      const threadMessage = req.query.threadMessage;
+      const threadId = req.query.threadID;
+      const threadUserId = req.query.threadUserId;
+
+      const cookie = Object.values(req.cookies).toString();
+      const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+      const idSQL = await new Promise((resolve, reject) => {
+        db.all(getId, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const rowz = Object.values(rows[0]).toString();
+          return resolve(rowz);
+        })
+      })
+
+      // db.run(`UPDATE Threads SET comment = ${threadMessage} WHERE postId = ${threadId}`, function (err, row) {
+      //   if (err) {
+      //     throw err;
+      //   }
+      //  })
+
+       db.run('INSERT INTO Threads(comment, postId, messagerId, postsUserId) VALUES(?, ?, ?, ?)', [threadMessage, threadId, idSQL, threadUserId], function(err) {
+        if (err) {
+          return console.log(err.message);
+        }
+    })
+
+      console.log(threadMessage);
+      console.log(threadId);
+
+      res.sendStatus(200);
+    })
+
+io.on("connection", (socket) => {
+
+  console.log("User Connected:" + socket.id);
+
+})
