@@ -13,6 +13,7 @@
     <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.js" integrity="sha512-FSNQjUUq97PtDnAJyMlBTH8EhV4o5X5FLVbzS9ttrdEVVbmrssJBh/PgXFQbxS+6yYx5n5irOj7de6Th0TRQZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
     <title>Home | Buzz</title>
   </head>
 
@@ -31,7 +32,7 @@
           <a href="#"><i class="fa-regular fa-newspaper fa-1x"></i>Latest News</a>
           <a style="cursor: pointer;" onclick="openSett()"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
           <a href="/messages"><i class="fa-solid fa-user-group fa-1x"></i>Friends</a>
-          <a href="#"><i class="fa-solid fa-shop fa-1x"></i>Buzz Market</a>
+          <a href="/market"><i class="fa-solid fa-shop fa-1x"></i>Buzz Market</a>
           <a href="#">See More</a>
         </div>
 
@@ -161,7 +162,7 @@
               </div>
               <div class="like-dislike-comment">
                 <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a>
-                <a id="comment" onclick="messageThread()" class="comment"><i class="fa-regular fa-comment"></i></a>  
+                <a id="comment" onclick="messageThread('<%= (renPost.postID); %>', '<%= (renPost.cmt); %>', '<%= (renPost.postIdNum) %>', '<%= (renPost.curUsnm); %>')" class="comment"><i class="fa-regular fa-comment"></i></a>  
                 <a id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
                 <div id="numberLikes" class="numberLikes">
                   <div class="like-circle">
@@ -230,7 +231,7 @@
 
         <div class="sub-title">
           <h4>Buzz Market</h4>
-          <a href="#">See All</a>
+          <a href="/market">See All</a>
         </div>
         
           <div class="thumbTiles swiper">
@@ -292,9 +293,28 @@
             </div>
             <div class="message-box">
 
+              <div id="threadComment" class="threadComment">
+                <p id="threadCmt"></p> <i class="fa-solid fa-arrow-turn-down"></i>
+                <input type="hidden" id="threadID"/>
+                <input type="hidden" id="threadUserId"/>
+                <input type="hidden" id="curUsername"/>
+                <!--<input type="hidden" id="threadUsername"/> -->
+                <div id="usernames">
+
+                </div>
+                
+              </div>
+
+              <div id="listThread" class="listThread">
+                <!-- <div class="bubble left">Bro ipsum dolor sit amet gaper backside single track, manny Bike epic clipless. Schraeder drop gondy, rail fatty slash gear jammer steeps</div>
+                <div class="bubble right">Ok, Thank you</div>
+                <div class="bubble left"> ut labore et dolore magna </div> -->
+                <!-- <div id="rightThread" class="bubble right"><p id="testMessage"></p></div> -->
+              </div>
+
               <div class="message-input">
                 <input id="threadText" type="text" placeholder="What's up?"/>
-                <button onclick="postThread(document.getElementById('threadText').value)"><i class="fa-solid fa-arrow-up"></i></button>
+                <button onclick="postThread(document.getElementById('threadText').value), socketMessage()"><i class="fa-solid fa-arrow-up"></i></button>
               </div>
             </div>
         </div>
@@ -312,6 +332,11 @@
       
     </div>
 
+    <!-- <script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+</script> -->
+
   </body>
 
 
@@ -328,6 +353,10 @@
   </style>
 
   <script>
+
+const socket = io('http://localhost:8080');
+
+socket.on("connection");
 
 const swiper = new Swiper('.swiper', {
     // Optional parameters
@@ -564,14 +593,44 @@ const swiper = new Swiper('.swiper', {
     const innerThread = document.getElementById('innerThread');
     // const sideNav = document.getElementById('sideNav');
 
-    function messageThread() {
-    if (sideThread.classList.contains('hiddenThread')) {
-      sideThread.classList.remove('hiddenThread');
-      sideThread.classList.add('showThread');
-    } else {
-      sideThread.classList.add('hiddenThread');
-      sideThread.classList.remove('showThread');
-    }
+    function messageThread(data, data2, data3, data4) {
+
+      const threadId = data;
+      const threadCmt = data2;
+      const threadUserId = data3;
+      const threadUsername = data4;
+      const threadCmtCont = document.getElementById('threadCmt');
+      const hiddenThreadId = document.getElementById('threadID');
+      const hiddenThreadUserId = document.getElementById('threadUserId');
+      const curUsername = document.getElementById('curUsername');
+      const threadUsernameCont = document.getElementById('threadUsername');
+      const usernames = document.getElementById('usernames');
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', `http://localhost:8080/openMessageThread?threadPostId=` + threadId + `&threadCmt=` + data2, true);
+
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+
+            if (sideThread.classList.contains('hiddenThread')) {
+              threadCmtCont.innerHTML = threadCmt;
+              hiddenThreadId.value = threadId;
+              hiddenThreadUserId.value = threadUserId;
+              sideThread.classList.remove('hiddenThread');
+              sideThread.classList.add('showThread');
+            } else {
+              sideThread.classList.add('hiddenThread');
+              sideThread.classList.remove('showThread');
+            }
+
+            usernames.innerHTML = xhr.responseText;
+            
+            console.log('working');
+            // dislikes.innerHTML = xhr.responseText;
+          }
+        }
+        xhr.send();
 
     // if (sideNav.classList.contains('hiddenNavbar')) {
     //     sideNav.classList.remove('hiddenNavbar');
@@ -631,11 +690,62 @@ header.onclick = function(e) {
 //   }
 // }
 
+
+socket.on('message', (data) => {
+        // socket.emit('message', data);
+        const listThread = document.getElementById('listThread');
+        const time = document.createElement('p');
+        const li = document.createElement('div');
+        const name = document.createElement('p');
+        const header = document.createElement('div');
+        const temp = document.createElement('div');
+        const curUsername = document.getElementById('usernames').children[0].value
+        const messageThreadPostId = document.getElementById('threadID').value;
+        // const curUsername = document.getElementById('curUsername');
+        // const hiddenId = document.createElement('input');
+        // hiddenId.value = data.id;
+        name.innerHTML = data.username;
+        time.innerHTML = data.time;
+        time.style.paddingLeft = ".3vw";
+        li.innerHTML = data.text;
+        header.appendChild(name);
+        header.appendChild(time);
+        header.classList.add('message-header');
+        temp.appendChild(header);
+        temp.appendChild(li);
+        if (data.messageThreadPostId == messageThreadPostId) {
+          if (data.username == curUsername) {
+          temp.classList.add("bubble");
+          temp.classList.add("right");
+        } else {
+          temp.classList.add("bubble");
+          temp.classList.add("left");
+        }
+        }
+        
+        // hiddenId.classList.add("bubble");
+        // hiddenId.classList.add("right");
+        // hiddenId.type = "hidden";
+        listThread.appendChild(temp);
+        // li.appendChild(hiddenId);
+        // document.getElementById('rightThread').classList.add('showThreadRight');
+        listThread.scrollTop = listThread.scrollHeight;
+      })
+const socketMessage = () => {
+        const messageInput = document.getElementById('threadText').value
+        const curUsername = document.getElementById('usernames').children[0].value
+        const receiverUsername = document.getElementById('usernames').children[1].value
+        const messageThreadPostId = document.getElementById('threadID').value;
+        socket.emit('message', messageInput, curUsername, receiverUsername, messageThreadPostId);
+}
+
     function postThread(data) {
 
       const xhr = new XMLHttpRequest();
+      const postID = document.getElementById('threadID').value;
+      const threadUserId = document.getElementById('threadUserId').value;
 
-      xhr.open('GET', `http://localhost:8080/messageThread?threadMessage=` + data, true);
+      xhr.open('GET', `http://localhost:8080/messageThread?threadMessage=` + data + `&threadID=` + postID + `&threadUserId=` + threadUserId, true);
 
         xhr.onreadystatechange = function() {
           if(xhr.readyState === 4 && xhr.status === 200) {

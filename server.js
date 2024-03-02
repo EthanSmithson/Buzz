@@ -14,6 +14,8 @@ const bcrypt = require('bcryptjs');
 
 const cookieParser = require('cookie-parser');
 
+const formatMessage = require('./utils/messages');
+
 //const validate = require('validate.js');
 const { check, validationResult } = require('express-validator');
 const { async } = require('validate.js');
@@ -25,8 +27,8 @@ const express = require("express"),
 app.use(express.json());
 app.use(cookieParser());
 
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, { cors: { origin: "*" }});
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server, { cors: { origin: "*" }});
 
 //setting view engine to ejs
 app.set("view engine", "ejs");
@@ -77,6 +79,10 @@ app.get('/messages', async (req, res) => {
 
  app.get('/signup', (req, res) => {
   res.render('signup');
+ });
+
+ app.get('/market', (req, res) => {
+  res.render('market');
  });
 
  app.get('/userSearch', async (req, res) => {
@@ -288,9 +294,24 @@ app.get("/magic", function (req, res) {
   res.render("magic");
 });
 
-app.listen(8080, function () {
+const server = app.listen(8080, function () {
   console.log("Server is running on port 8080 ");
 });
+
+const { Server } = require('socket.io');
+
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+
+  console.log("User Connected:" + socket.id);
+
+  socket.on("message", (data, data2, data3, data4) => {
+    io.sockets.emit('message', formatMessage(data2, data, data3, data4));
+    console.log(data)
+  })
+
+})
 
 // sql = `CREATE TABLE Register(ID INTEGER PRIMARY KEY, first_name, last_name, username, email, password, birthday, notifications)`
 // db.run(sql)
@@ -1227,12 +1248,59 @@ app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
       const threadPostId = req.query.threadPostId;
       const threadCmt = req.query.threadCmt;
 
+      const cookie = Object.values(req.cookies).toString();
+
+      const getUsername = `SELECT username as curUsername from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+      const idUsername = await new Promise((resolve, reject) => {
+        db.all(getUsername, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rowz2);
+        })
+      })
+
+      const getThreadUsername = `SELECT username as USNM from Users U JOIN Post P ON U.ID = P.userId WHERE P.ID = ${threadPostId}`
+
+      const threadUsername = await new Promise((resolve, reject) => {
+        db.all(getThreadUsername, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rowz2);
+        })
+      })
+
+      const getPostId = `SELECT P.ID as postId from Post P WHERE P.ID = ${threadPostId}`
+
+      const PostId = await new Promise((resolve, reject) => {
+        db.all(getPostId, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rowz2);
+        })
+      })
+
+      res.render('partials/usernames', {
+        idUsername,
+        threadUsername,
+        PostId
+      });
+
       // const getThreadCmt = `SELECT comment FROM Threads WHERE postId = ${threadPostId}`;
 
-      console.log(threadPostId);
-      console.log(threadCmt);
+      // console.log(threadPostId);
+      // console.log(threadCmt);
 
-      res.sendStatus(200);
+      // res.sendStatus(200);
     })
 
     app.get('/messageThread', urlEncodedParser, async (req, res) => {
@@ -1266,14 +1334,8 @@ app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
         }
     })
 
-      console.log(threadMessage);
-      console.log(threadId);
+      // console.log(threadMessage);
+      // console.log(threadId);
 
       res.sendStatus(200);
     })
-
-io.on("connection", (socket) => {
-
-  console.log("User Connected:" + socket.id);
-
-})
