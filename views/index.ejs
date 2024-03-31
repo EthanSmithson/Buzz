@@ -12,6 +12,9 @@
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
     <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Gurmukhi:wght@100..800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.js" integrity="sha512-FSNQjUUq97PtDnAJyMlBTH8EhV4o5X5FLVbzS9ttrdEVVbmrssJBh/PgXFQbxS+6yYx5n5irOj7de6Th0TRQZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
     <title>Home | Buzz</title>
@@ -19,7 +22,7 @@
 
 
   <body>
-    <header id="header">
+    <header class="myheader" id="header">
         <%- include('partials/header'); %>  
     </header>
 
@@ -33,7 +36,7 @@
           <a style="cursor: pointer;" onclick="openSett()"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
           <a href="/messages"><i class="fa-solid fa-user-group fa-1x"></i>Friends</a>
           <a href="/market"><i class="fa-solid fa-shop fa-1x"></i>Buzz Market</a>
-          <a href="#">See More</a>
+          <!-- <a href="#">See More</a> -->
         </div>
 
         <div class="subMenuWrap-sett close-menu-sett" id="subMenuSett">
@@ -70,7 +73,16 @@
                   <p>Updates</p>
                 </div>
                 <div id="setts-prof" class="setts-prof">
-                  <p>Profile Image</p>
+                  <form action="/uploadPic" method="POST" enctype="multipart/form-data">
+                    <fieldset>
+                      <div class="setting">
+                          <p>Profile Image</p>
+                          <input name="myProfImg" id="myProfImg" style="display: none;" type="file"/>
+                          <a style="cursor: pointer;" onclick="picUpload()" id="attachPic" class="attach-icon"><i style="color: #fff;" class="fa-solid fa-cloud-arrow-up"></i></a>
+                          <button id="uploadMyPic" class="uploadMyPic" type="submit"><p>Upload Profile Image</p></button>
+                      </div>
+                    </fieldset>
+                  </form>
                   <p>Username</p>
                   <p>Password</p>
                 </div>
@@ -105,9 +117,19 @@
             </div>
           </div>
 
+          <!-- <img class="profile-img" src="<% if(typeof getPic != 'undefined'){ %>
+            <%= getPic; %>
+          <% } else{ %>  
+            images/userIcon.png
+         <% } %>" onclick="openSubMenu()"> -->
+
           <div class="write-post-container">
             <div class="profile-icon">
-              <img src="images/userIcon.png">
+              <img class="profile-img" src="<% if(typeof getPic != 'undefined'){ %>
+                <%= getPic; %>
+              <% } else{ %>  
+                images/userIcon.png
+             <% } %>">
               <div>
                 <% if(typeof idUsername != 'undefined') { %>
                   <p><%= idUsername; %></p>
@@ -116,15 +138,16 @@
               </div>
             </div>
 
-            <form action="/userPost" method="POST">
+            <form action="/userPost" method="POST" enctype="multipart/form-data">
               <fieldset>
                 <div class="input-post">
-                  <textarea rows="3" id="createNewPost" name="createNewPost" placeholder="What's New?"></textarea>
+                  <textarea required rows="3" id="createNewPost" name="createNewPost" placeholder="What's New?"></textarea>
                 </div>
 
                 <div class="my-post-icons">
                   <div class="share-attach-icons" style="display: inline-flex;">
-                    <a href="#" class="attach-icon"><i class="fa-solid fa-paperclip"></i></a>
+                    <input name="myImg" id="myImg" style="display: none;" type="file"/>
+                    <a style="cursor: pointer;" onclick="fileUpload()" id="attachFile" class="attach-icon"><i class="fa-solid fa-paperclip"></i></a>
                     <button type="submit" class="post-icon"><p>Post</p>&nbsp;&nbsp;<i style="padding-top: .7vh;" class="fa-solid fa-square-check"></i></button>
                   </div>
                 </div>
@@ -140,7 +163,9 @@
             <div class="main-feed-post">
               <div class="posters-info">
                 <div  class="profile-icon">
-                  <a href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><img src="images/userIcon.png"></a>
+                  <a class="rendered-post" href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><img class="profile-img" src="<% if(typeof renPost.pic != 'undefined'){ %>
+                    <%= renPost.pic; %>
+                  <% } %>"></a>
                   <div>
                     <input value="<%= (renPost.conf); %>" type="hidden"/>
                     <a href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><p><%= (renPost.curUsnm); %></p></a>
@@ -160,10 +185,22 @@
                     
                 
               </div>
+              <div class="attachment-box">
+
+
+
+                <div class="postFileUpload">
+                  <img src="<%= (renPost.img); %>">
+                </div>
+
+
+
+              </div>
+
               <div class="like-dislike-comment">
                 <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a>
-                <a id="comment" onclick="messageThread('<%= (renPost.postID); %>', '<%= (renPost.cmt); %>', '<%= (renPost.postIdNum) %>', '<%= (renPost.curUsnm); %>')" class="comment"><i class="fa-regular fa-comment"></i></a>  
-                <a id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
+                <a style="cursor: pointer;" id="comment" onclick="messageThread('<%= (renPost.postID); %>', '<%= (renPost.cmt); %>', '<%= (renPost.postIdNum) %>', '<%= (renPost.curUsnm); %>'), populateMessages('<%= (renPost.postID); %>')" class="comment"><i class="fa-regular fa-comment"></i></a>  
+                <a style="cursor: pointer;" id="up" onclick="likePost('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
                 <div id="numberLikes" class="numberLikes">
                   <div class="like-circle">
                       <div class="like-amount">
@@ -171,7 +208,7 @@
                       </div>
                     </div>
                 </div>
-                <a id="down" onclick="dislikePost('<%= (renPost.postID); %>')" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
+                <a style="cursor: pointer;" id="down" onclick="dislikePost('<%= (renPost.postID); %>')" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
                 <div id="numberLikes" class="numberDislikes">
                   <div class="like-circle">
                       <div class="like-amount">
@@ -203,11 +240,17 @@
               <div class="online-contacts" style="margin-bottom: -16vh; margin-top: -11vh;">
                 <div class="online-friend">
                   <a id="imgA" href="http://localhost:8080/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="padding-top: .3em; height: 5px;"><div id="seeFriendImg" class="online">
-                    <img src="images/userIcon.png">
+                    <img src="<% if(typeof friendPic[i] != 'undefined'){ %>
+                      <%= friendPic[i]; %>
+                    <% } else{ %>  
+                      images/userIcon.png
+                   <% } %>">
                   </div></a>
                   <a id="textA" href="http://localhost:8080/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="height: 15px; padding-top: .3em; cursor: pointer;
                     color: #000;
-                    font-size: medium;"><p id="seeFriendText"><%= (friendName[i]); %></p></a>
+                    font-size: medium; font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto;
+        letter-spacing: .15px;"><p id="seeFriendText"><%= (friendName[i]); %></p></a>
                   <input id="friendID" type="hidden" value="<%= friendId[i] %>"/>
                 </div>
               </div>
@@ -306,15 +349,12 @@
               </div>
 
               <div id="listThread" class="listThread">
-                <!-- <div class="bubble left">Bro ipsum dolor sit amet gaper backside single track, manny Bike epic clipless. Schraeder drop gondy, rail fatty slash gear jammer steeps</div>
-                <div class="bubble right">Ok, Thank you</div>
-                <div class="bubble left"> ut labore et dolore magna </div> -->
-                <!-- <div id="rightThread" class="bubble right"><p id="testMessage"></p></div> -->
+               
               </div>
 
               <div class="message-input">
-                <input id="threadText" type="text" placeholder="What's up?"/>
-                <button onclick="postThread(document.getElementById('threadText').value), socketMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+                <input  id="threadText" type="text" placeholder="What's up?"/>
+                <button id="enterThreadMessage" onclick="postThread(document.getElementById('threadText').value), socketMessage()"><i class="fa-solid fa-arrow-up"></i></button>
               </div>
             </div>
         </div>
@@ -492,6 +532,8 @@ const swiper = new Swiper('.swiper', {
       duration: 150
     });
     }
+    const settBtn = document.getElementById('uploadMyPic')
+    settBtn.style.display = "none";
     }
 
     const vert = document.getElementById('vertical-line');
@@ -588,6 +630,47 @@ const swiper = new Swiper('.swiper', {
     }
     }
 
+    function populateMessages(data) {
+
+      const threadData = data;
+      const listThread = document.getElementById('listThread');
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', `http://localhost:8080/populateMessages?threadPostID=` + threadData, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+
+          const listOfThreadMessages = xhr.responseText;
+          // listOfThreadMessages.style.display = "none";
+          listThread.innerHTML = listOfThreadMessages;
+
+          for(i=0; i<listThread.childElementCount; i++) {
+            const bubbleFlag = listThread.children[i];
+            // console.log(listThread.children[i].children[0].children[0].value)
+            // console.log(listThread.children[i].children[0].children[1].textContent)
+
+            if(listThread.children[i].children[0].children[0].value == listThread.children[i].children[0].children[1].textContent) {
+              bubbleFlag.classList.add('right')
+            } else {
+              bubbleFlag.classList.add('left')
+            }
+          }
+
+          
+
+          // listThread.childNodes.forEach(element => {
+          //   console.log(element)
+          // });
+
+          // console.log(listOfThreadMessages);
+
+        }
+      }
+
+      xhr.send();
+    }
+
     const comment = document.getElementById('comment');
     const sideThread = document.getElementById('sideThread');
     const innerThread = document.getElementById('innerThread');
@@ -626,7 +709,7 @@ const swiper = new Swiper('.swiper', {
 
             usernames.innerHTML = xhr.responseText;
             
-            console.log('working');
+            // console.log('working');
             // dislikes.innerHTML = xhr.responseText;
           }
         }
@@ -640,6 +723,15 @@ const swiper = new Swiper('.swiper', {
     //     sideNav.classList.remove('showNavbar');
     // }
 }
+
+const keyPressThread = document.getElementById('threadText');
+keyPressThread.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+
+    document.getElementById('enterThreadMessage').click();
+  }
+})
 
 const left = document.getElementById('left');
 left.onclick = function(e) {
@@ -699,13 +791,16 @@ socket.on('message', (data) => {
         const name = document.createElement('p');
         const header = document.createElement('div');
         const temp = document.createElement('div');
+        // const myPostId = document.createElement('input');
         const curUsername = document.getElementById('usernames').children[0].value
-        const messageThreadPostId = document.getElementById('threadID').value;
+        const messageThreadPostId = document.getElementById('usernames').children[2].value;
         // const curUsername = document.getElementById('curUsername');
         // const hiddenId = document.createElement('input');
         // hiddenId.value = data.id;
         name.innerHTML = data.username;
         time.innerHTML = data.time;
+        // myPostId.value = data.messageThreadPostId;
+        // myPostId.setAttribute("id", "wrongSocket");
         time.style.paddingLeft = ".3vw";
         li.innerHTML = data.text;
         header.appendChild(name);
@@ -713,6 +808,7 @@ socket.on('message', (data) => {
         header.classList.add('message-header');
         temp.appendChild(header);
         temp.appendChild(li);
+        // temp.appendChild(myPostId);
         if (data.messageThreadPostId == messageThreadPostId) {
           if (data.username == curUsername) {
           temp.classList.add("bubble");
@@ -721,7 +817,12 @@ socket.on('message', (data) => {
           temp.classList.add("bubble");
           temp.classList.add("left");
         }
+        } else {
+          temp.style.display = "none";
         }
+
+        const threadTextInput = document.getElementById('threadText')
+        threadTextInput.value = "";
         
         // hiddenId.classList.add("bubble");
         // hiddenId.classList.add("right");
@@ -736,6 +837,9 @@ const socketMessage = () => {
         const curUsername = document.getElementById('usernames').children[0].value
         const receiverUsername = document.getElementById('usernames').children[1].value
         const messageThreadPostId = document.getElementById('threadID').value;
+        if (messageInput == "") {
+          return
+        }
         socket.emit('message', messageInput, curUsername, receiverUsername, messageThreadPostId);
 }
 
@@ -757,6 +861,17 @@ const socketMessage = () => {
         xhr.send();
     }
 
+    function fileUpload() {
+      const fileUpload = document.getElementById('myImg')
+      fileUpload.click();
+    }
+
+    function picUpload() {
+      const fileUpload = document.getElementById('myProfImg')
+      const fileUploadBtn = document.getElementById('uploadMyPic')
+      fileUpload.click();
+      fileUploadBtn.style.display = "block";
+    }
     
   </script>
 

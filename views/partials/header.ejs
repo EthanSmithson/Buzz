@@ -1,6 +1,9 @@
 <head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
 </head>
 
@@ -21,7 +24,7 @@
 
         <div class="subMenuWrap2">
           <div class="submenu2">
-            <div class="list" id="list"></div>    
+            <div class="list" id="list"></div>
             <div class="addedUser" id="added"></div>
           </div>
         </div>
@@ -31,9 +34,16 @@
         </div>
 
         <div class="profile-icon-head prof-online">
-          <img class="profile-img" src="images/userIcon.png" onclick="openSubMenu()">
+          <!-- <% if(typeof getPic != 'undefined') { %>
+                <img src="<%= getPic; %>">
+              <% } %> -->
+          <img class="profile-img" src="<% if(typeof getPic != 'undefined'){ %>
+            <%= getPic; %>
+          <% } else{ %>  
+            images/userIcon.png
+         <% } %>" onclick="openSubMenu()">
         </div>
-
+        
         <a class="notis" href="#" onclick="openNotis(); renderFriends()">
           <i id="bell" class="fa-solid fa-bell fa-lg"></i>
         </a>
@@ -41,7 +51,11 @@
         <div class="subMenuWrap" id="subMenu">
             <div class="subMenu">
               <div class="userInfo">
-                <img class="profile-icon-sub-menu" src="images/userIcon.png">
+                <img class="profile-icon-sub-menu" src="<% if(typeof getPic != 'undefined'){ %>
+                  <%= getPic; %>
+                <% } else{ %>  
+                  images/userIcon.png
+               <% } %>">
                 <% if(typeof idUsername != 'undefined') { %>
                   <p><%= idUsername; %></p>
                 <% } %>
@@ -54,7 +68,7 @@
               </a>
               <a href="#" class="sub-menu-link">
                 <i class="fa-solid fa-user-gear"></i>
-                <p>Settings</p>
+                <p style="cursor: pointer;" onclick="openSett()">Settings</p>
                 <span>></span>
               </a>
               <a href="/landing" class="sub-menu-link">
@@ -69,14 +83,14 @@
           <div class="subMenuNotis">
             <div class="heading" style=" border-bottom: 1px solid #ccc;">
               <a onclick="closeNotis()" style="color: #fff; padding-top: 1vh;"><i id="exitNotis" class="fa-solid fa-x"></i></a>
-              <h3 style="color: #fff; font-family: 'Inter', sans-serif; letter-spacing: 1px;">Notifications</h3>
+              <h3 style="letter-spacing: 1px;">Notifications</h3>
             </div>
-            <p style="color: #fff; font-family: 'Inter', sans-serif;">Friends Requests</p>
+            <p>Friends Requests</p>
             <div id="requests" class="requests" style="height: 15vh; padding-top: 2vh; overflow-y: scroll;">
               
             </div>
             <div style="margin-top: 6vh;" class="accountActivity">
-              <p style="color: #fff; font-family: 'Inter', sans-serif;">Activity</p>
+              <p>Activity</p>
               <div class="activity">
               </div>
             </div>

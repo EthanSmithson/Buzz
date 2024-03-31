@@ -31,7 +31,7 @@
 
 
   <body>
-    <header id="header">
+    <header class="myheader" id="header">
         <%- include('partials/header'); %>  
     </header>
 
@@ -43,12 +43,25 @@
             <a><i class="fa-solid fa-bars"></i></a>
         </div>
     </div>
-    <div id="filter-menu" class="filter-menu hide-filter-menu">
-        <li><p>Price</p><span>></span></li>
-        <li><p>Category</p><span>></span></li>
-        <li><p>Miles Away</p><span>></span></li>
-        <li><p>Brand</p><span>></span></li>
+    <div id="filter-wrap" class="filter-wrap">
+        <div class="blocker" onclick="hidePopup()"></div>
+        <div id="filter-menu" class="filter-menu">
+            <li><p>Price</p><span>></span></li>
+            <li><p>Category</p><span>></span></li>
+            <li><p>Miles Away</p><span>></span></li>
+            <li><p>Brand</p><span>></span></li>
+        </div>
     </div>
+
+    <!-- <button onclick="showPopup()">
+        Open Popup
+      </button>
+      <div class="popup">
+        <div class="blocker" onclick="hidePopup()"></div>
+        <div class="contents">
+          This is popup
+        </div>
+      </div> -->
 
     <div class="categories">
         <div class="category">
@@ -173,15 +186,26 @@
             })
         }
 
-        function openFilterMenu() {
-            const ham = document.getElementById('filter-menu');
 
-            if(ham.classList.contains('hide-filter-menu')) {
-                ham.classList.remove('hide-filter-menu');
+        const ham = document.getElementById('filter-menu');
+        const filterWrap = document.getElementById('filter-wrap');
+        const blocker = document.getElementById('blocker');
+
+
+        function openFilterMenu() {
+
+            if(!ham.classList.contains('filter-menu-open')) {
+                ham.classList.add('filter-menu-open');
+                filterWrap.classList.add('filter-wrap-open');
             } else {
-                ham.classList.add('hide-filter-menu');
+                ham.classList.remove('filter-menu-open');
             }
 
+        }
+
+        function hidePopup() {
+            ham.classList.remove('filter-menu-open');
+            filterWrap.classList.remove('filter-wrap-open');
         }
         
     </script>

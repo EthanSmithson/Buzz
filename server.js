@@ -16,6 +16,38 @@ const cookieParser = require('cookie-parser');
 
 const formatMessage = require('./utils/messages');
 
+const formatDM = require('./utils/dm');
+
+const moment = require("moment");
+
+const path = require('path');
+
+// const fileUpload = require('express-fileupload');
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploadImages')
+  },
+  filename: (req, file, cb) => {
+    console.log(file)
+    cb(null, file.originalname)
+  }
+});
+const upload = multer({storage: storage});
+
+const storage2 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/profileImages')
+  },
+  filename: (req, file, cb) => {
+    console.log(file)
+    cb(null, file.originalname)
+  }
+});
+
+const upload2 = multer({storage: storage2});
+
 //const validate = require('validate.js');
 const { check, validationResult } = require('express-validator');
 const { async } = require('validate.js');
@@ -35,6 +67,7 @@ app.set("view engine", "ejs");
 
 app.use(express.static('public'));
 
+
 app.get('/messages', async (req, res) => {
 
   const cookie = Object.values(req.cookies).toString();
@@ -51,8 +84,69 @@ app.get('/messages', async (req, res) => {
       return resolve(rowz2);
     })
   })
+
+  const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+  const idSQL = await new Promise((resolve, reject) => {
+    db.all(getId, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+
+  const friendsList = `SELECT U.username as user, userId, CASE WHEN U.profileImage IS NULL THEN "/images/userIcon.png" ELSE U.profileImage END as getPic FROM Users U
+    INNER JOIN (SELECT CASE
+    WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+    WHEN F.friend2 != ${idSQL} THEN F.Friend2
+    END as userId
+    , F.confirmed as conf
+    FROM Friends F
+    WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+    ) as SubTable ON SubTable.userId = U.ID
+    WHERE conf = 1
+  `
+
+  const friends = await new Promise((resolve, reject) => {
+    db.all(friendsList, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz2 = rows
+      // console.log(rowz2);
+      return resolve(rowz2);
+    })
+  })
+
+  const friendName = friends.map(item => item.user);
+  // console.log('This is my Friends list: ', friendName);
+  const friendId = friends.map(item => item.userId);
+  const friendPic = friends.map(item => item.getPic);
+
+  const pic = `SELECT CASE WHEN profileImage IS NULL THEN "/images/userIcon.png" ELSE profileImage END as profileImage FROM Users WHERE ID = ${idSQL}`
+  const getPic = await new Promise((resolve, reject) => {
+    db.all(pic, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+
+
   res.render('messages', {
-    idUsername
+    idUsername,
+    friendName,
+    friendId,
+    idSQL,
+    friendPic,
+    getPic
   });
  });
  
@@ -168,7 +262,19 @@ app.get('/messages', async (req, res) => {
     })
   })
 
-  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, likes as likes, dislikes as dislikes
+  const pic = `SELECT CASE WHEN profileImage IS NULL THEN "/images/userIcon.png" ELSE profileImage END as profileImage FROM Users WHERE ID = ${idSQL}`
+  const getPic = await new Promise((resolve, reject) => {
+    db.all(pic, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, likes as likes, dislikes as dislikes, imageUrl as img, CASE WHEN U.profileImage IS NULL THEN "/images/userIcon.png" ELSE U.profileImage END as pic
   FROM Post P
   INNER JOIN(
     SELECT CASE
@@ -216,7 +322,7 @@ app.get('/messages', async (req, res) => {
 
   // console.log(idUsername);
 
-  const friendsList = `SELECT U.username as user, userId FROM Users U
+  const friendsList = `SELECT U.username as user, userId, CASE WHEN U.profileImage IS NULL THEN "/images/userIcon.png" ELSE U.profileImage END as getPic FROM Users U
     INNER JOIN (SELECT CASE
     WHEN F.Friend1 != ${idSQL} THEN F.Friend1
     WHEN F.friend2 != ${idSQL} THEN F.Friend2
@@ -245,6 +351,7 @@ app.get('/messages', async (req, res) => {
   const friendId = friends.map(item => item.userId);
   const likes = friends.map(item => item.likes);
   const dislikes = friends.map(item => item.dislikes);
+  const friendPic = friends.map(item => item.getPic);
 
   // const friendCheck = `SELECT confirmed FROM Friends WHERE (F.Friend1 = ${idSQL} and F.Friend2  ${}`
 
@@ -271,12 +378,22 @@ app.get('/messages', async (req, res) => {
     friendName,
     friendId,
     likes,
-    dislikes
+    dislikes,
+    getPic,
+    friendPic
   });
  });
 
  app.get('/landing', (req, res) => {
   res.render('landing');
+ });
+
+ app.get('/passwordReset', (req, res) => {
+  // console.log(req.query)
+  const myEmail = req.query.email;
+  res.render('passwordReset', {
+    myEmail
+  });
  });
 
 //  app.get('/liveFeed', (req, res) => {
@@ -311,6 +428,11 @@ io.on("connection", (socket) => {
     console.log(data)
   })
 
+  socket.on("DM", (data1, data2, data3, data4, data5, data6) => {
+    io.sockets.emit('DM', formatDM(data1, data2, data3, data4, data5, data6));
+    console.log(data1, data2, data3, data4, data5, data6);
+  })
+
 })
 
 // sql = `CREATE TABLE Register(ID INTEGER PRIMARY KEY, first_name, last_name, username, email, password, birthday, notifications)`
@@ -343,6 +465,7 @@ app.get('/', function(req, res){
 // 'INSERT INTO Users (first_name, last_name, username, email, password, birthdate, notifications) VALUES ("Ethan", "Smithson", "esmithson123", "ethansmithson413@gmail.com", "ess123", "5-1-2023", "yes");'
 
 app.use(bodyParser.json());
+// app.use(fileUpload());
 
 app.post('/signup', urlEncodedParser,
  [
@@ -526,6 +649,82 @@ app.post('/signup', urlEncodedParser,
   
 });
 
+app.post('/sendNewLink', async (req, res) => {
+  const myResetEmail = req.body.resetEmail;
+  // console.log(myResetEmail)
+
+  const searchResetEmail = `SELECT CASE WHEN email IS NOT NULL THEN 1 ELSE 2 END as resetFlag FROM Users WHERE email = '${myResetEmail}'`
+
+      const validResetEmail = await new Promise((resolve, reject) => {
+        db.all(searchResetEmail, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const flag = validResetEmail.map(item => item.resetFlag);
+
+      if (flag == 1) {
+        // console.log('1')
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
+          auth: {
+            // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+            user: 'xboxonebro14@gmail.com',
+            pass: 'fyjr wkbu eqgj ppxp',
+          },
+        });
+        
+        const message = {
+            from: '"Buzz" <buzz@example.com>', // sender address
+            to: myResetEmail, // list of receivers
+            subject: "Buzz Account Password Reset", // Subject line
+            text: "Reset Your Password!", // plain text body
+            html: `<div style="text-align: center;"><h2>Uh-Oh Let's Get This Fixed &nbsp;😲<h2><h4>Click Here to Reset Your Password.<h4><br><br><br><a class="but" href="http://localhost:8080/passwordReset?email=${myResetEmail}" style="height: 35px; width: 170px; background-color: #3f90e8; color: #fff; border: 0px; text-decoration: none; padding: 10px 30px;">Reset Password</a><br><br><br><br></p><img src="cid:myImg"/></div>`,
+            attachments: [{
+              filename: 'WebsiteLogoBlue.png',
+              path: __dirname + '/public/images/WebsiteLogoBlue.png',
+              cid: 'myImg'
+            }]
+        }
+        // async..await is not allowed in global scope, must use a wrapper
+        async function main() {
+          // send mail with defined transport object
+          const info = await transporter.sendMail(message);
+        
+          console.log("Message sent: %s", info.messageId);
+          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        
+          //
+          // NOTE: You can go to https://forwardemail.net/my-account/emails to see your email delivery status and preview
+          //       Or you can use the "preview-email" npm package to preview emails locally in browsers and iOS Simulator
+          //       <https://github.com/forwardemail/preview-email>
+          //
+        }
+        
+        main().catch(console.error);
+        const goodResendAlert = 'Password Reset Sent'
+        res.render('landing', {
+          goodResendAlert
+        })
+      } else {
+        // console.log('2')
+        const resendAlert = 'Email Does Not Exist'
+          // console.log(resendAlert);
+          res.render('landing', {
+            resendAlert
+          })
+      }
+
+      // console.log(flag)
+})
+
 app.get('/verify/:uniqueString', async (req, res) => {
   const { uniStr } = req.params
   const us = uniStr
@@ -555,6 +754,59 @@ app.get('/verify/:uniqueString', async (req, res) => {
        }
     })
   })
+})
+
+app.post('/reset', urlEncodedParser, [
+  check('Resetpswd').isLength( { min: 8 } ).withMessage("Password must exceed 8 characters"),
+  check('repswd').trim().custom(async (value, {req}) => {
+    const password = req.body.Resetpswd;
+    if(password !== req.body.Resetrepswd) {
+      throw new Error('Passwords must match')
+    }
+  })
+ ], async (req, res) => {
+  const errors = validationResult(req)
+    const renPswd = req.body.Resetpswd
+    const renRepswd = req.body.Resetrepswd
+    const myEmail = req.body.myEmail;
+    if(!errors.isEmpty()) {
+      console.log(errors);
+      // return res.status(422).jsonp(errors.array());
+      const alert = errors.array()
+      res.render('passwordReset', {
+        alert,
+        renPswd,
+        renRepswd,
+        myEmail
+      })
+
+    //   res.render('signup', {
+    //     title: 'Registration Error',
+    //     errors: errors
+    // });
+
+      return res.status(400);
+    } else {
+      const hashPassword = req.body.Resetpswd;
+      const hash = await bcrypt.hash(hashPassword, 10);
+      console.log(hash);
+
+      
+
+      console.log(req.body.Resetpswd)
+      console.log(hash)
+      console.log(req.body)
+      // `UPDATE Friends SET confirmed = ? WHERE Friend1 = ${requesterId} AND Friend2 = ${friend}`, [1], function (err, row)
+    db.run(`UPDATE Users SET password = ? WHERE email = '${myEmail}'`, [hash], function(err) {
+      if (err) {
+        return console.log(err.message);
+      }
+  })
+
+    res.redirect('landing');
+    }
+    
+    
 })
 
 
@@ -636,7 +888,63 @@ app.post('/login', async (req, res) => {
 }
 )
 
-app.post('/userPost', urlEncodedParser, async (req, res) => {
+app.post('/uploadPic', upload2.single('myProfImg'), urlEncodedParser, async (req, res) => {
+  console.log(req.files)
+
+
+  const cookie = Object.values(req.cookies).toString();
+    const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+    console.log(Object.values(req.cookies).toString());
+    const idSQL = await new Promise((resolve, reject) => {
+      db.all(getId, (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+
+        const rowz = Object.values(rows[0]).toString();
+        console.log(rowz);
+        return resolve(rowz);
+      })
+    })
+
+  //   db.run('INSERT INTO Images(fieldName, originalName, mimeType) VALUES(?, ?, ?)', [req.file.fieldname, req.file.originalname, req.file.mimetype], function(err) {
+  //     if (err) {
+  //       return console.log(err.message);
+  //     }
+  // })
+
+  if (req.file === undefined){
+    db.run(`UPDATE Users SET profileImage = ? WHERE ID = ${idSQL}`, [''], function (err, row) {
+      if (err) {
+        throw err;
+      }
+     })
+  //   db.run('INSERT INTO Post(comment, userId, creationDtTm) VALUES(?, ?, ?)', [req.body.createNewPost, idSQL, Date.now()], function(err) {
+  //     if (err) {
+  //       return console.log(err.message);
+  //     }
+  // })
+  } else {
+    db.run(`UPDATE Users SET profileImage = ? WHERE ID = ${idSQL}`, "/profileImages/" + [req.file.originalname], function (err, row) {
+      if (err) {
+        throw err;
+      }
+     })
+  //   db.run('INSERT INTO Post(comment, userId, creationDtTm, imageUrl) VALUES(?, ?, ?, ?)', [req.body.createNewPost, idSQL, Date.now(), "/uploadImages/" + req.file.originalname], function(err) {
+  //     if (err) {
+  //       return console.log(err.message);
+  //     }
+  // })
+  }
+
+  
+  res.redirect('/index');
+})
+
+app.post('/userPost', upload.single('myImg'), urlEncodedParser, async (req, res) => {
+    // const {name, data} = req.files;
+    console.log(req.files)
+
     const cookie = Object.values(req.cookies).toString();
     const getId = `SELECT ID as id from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
     console.log(Object.values(req.cookies).toString());
@@ -652,11 +960,31 @@ app.post('/userPost', urlEncodedParser, async (req, res) => {
       })
     })
 
+  //   db.run('INSERT INTO Images(fieldName, originalName, mimeType) VALUES(?, ?, ?)', [req.file.fieldname, req.file.originalname, req.file.mimetype], function(err) {
+  //     if (err) {
+  //       return console.log(err.message);
+  //     }
+  // })
+
+  if (req.file === undefined){
     db.run('INSERT INTO Post(comment, userId, creationDtTm) VALUES(?, ?, ?)', [req.body.createNewPost, idSQL, Date.now()], function(err) {
       if (err) {
         return console.log(err.message);
       }
   })
+  } else {
+    db.run('INSERT INTO Post(comment, userId, creationDtTm, imageUrl) VALUES(?, ?, ?, ?)', [req.body.createNewPost, idSQL, Date.now(), "/uploadImages/" + req.file.originalname], function(err) {
+      if (err) {
+        return console.log(err.message);
+      }
+  })
+  }
+
+  //   db.run('INSERT INTO Post(comment, userId, creationDtTm, imageUrl) VALUES(?, ?, ?, ?)', [req.body.createNewPost, idSQL, Date.now(), "/uploadImages/" + req.file.originalname], function(err) {
+  //     if (err) {
+  //       return console.log(err.message);
+  //     }
+  // })
 
   console.log(req.body.createNewPost);
 
@@ -853,7 +1181,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   
   const seeUserId = req.query.viewFriend;
 
-  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId, likes as likes, dislikes as dislikes
+  const postSQL2 = `SELECT P.ID as postID, comment as cmt, P.userId as postIdNum, U.username as curUsnm, conf, U.ID clickedId, likes as likes, dislikes as dislikes, imageUrl as img, CASE WHEN U.profileImage IS NULL THEN "/Images/userIcon.png" ELSE U.profileImage END as pic
   FROM Post P
   INNER JOIN(
     SELECT CASE
@@ -902,7 +1230,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
 
   console.log(idUsername);
 
-  const friendsList = `SELECT U.username as user, userId FROM Users U
+  const friendsList = `SELECT U.username as user, userId, CASE WHEN U.profileImage IS NULL THEN "/images/userIcon.png" ELSE U.profileImage END as getPic FROM Users U
     INNER JOIN (SELECT CASE
     WHEN F.Friend1 != ${idSQL} THEN F.Friend1
     WHEN F.friend2 != ${idSQL} THEN F.Friend2
@@ -931,6 +1259,7 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   const friendId = friends.map(item => item.userId);
   const likes = friends.map(item => item.likes);
   const dislikes = friends.map(item => item.dislikes);
+  const friendPic = friends.map(item => item.getPic);
 
   console.log(renPosts)
 
@@ -938,13 +1267,27 @@ app.get('/seeFriend', urlEncodedParser, async (req, res) => {
   console.log("who I clicked on", userPostId);
   console.log('this is the selected user:' , seeUserId);
 
+  const pic = `SELECT CASE WHEN profileImage IS NULL THEN "/images/userIcon.png" ELSE profileImage END as profileImage FROM Users WHERE ID = ${idSQL}`
+  const getPic = await new Promise((resolve, reject) => {
+    db.all(pic, (err, rows) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const rowz = Object.values(rows[0]).toString();
+      return resolve(rowz);
+    })
+  })
+
   res.render('seeFriend', {
     renPosts,
     idUsername,
     friendName,
     friendId,
     likes,
-    dislikes
+    dislikes,
+    getPic,
+    friendPic
   });
   
 
@@ -1244,6 +1587,81 @@ app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
     //     });
     // });
 
+    app.get('/populateMessages', urlEncodedParser, async (req, res) => {
+
+      const cookie = Object.values(req.cookies).toString();
+      const postId = req.query.threadPostID;
+
+      // console.log("this is my post:", postId)
+      const myThreadMessages = `SELECT comment CMT FROM Threads WHERE postId = ${postId}`
+
+      const threadMessages = await new Promise((resolve, reject) => {
+        db.all(myThreadMessages, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const myThreadSenderName = `SELECT U.username USNM FROM Users U JOIN Threads T ON U.ID = T.messagerId WHERE T.postId = ${postId}`
+
+      const threadSenderName = await new Promise((resolve, reject) => {
+        db.all(myThreadSenderName, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const getUsername = `SELECT username as curUsername from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+      const idUsername = await new Promise((resolve, reject) => {
+        db.all(getUsername, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rowz2);
+        })
+      })
+
+      const myTimeStamp = `SELECT timeStamp TMSTPM FROM Threads WHERE postId = ${postId}`
+
+      const timeStamp = await new Promise((resolve, reject) => {
+        db.all(myTimeStamp, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const threadStringMessages = threadMessages.map(item => item.CMT);
+      // console.log(threadStringMessages)
+      const threadStringSenderName = threadSenderName.map(item => item.USNM);
+      const threadTimeStamp = timeStamp.map(item => item.TMSTPM);
+      // console.log(threadStringSenderName)
+      // console.log(idUsername)
+      // console.log(moment().format('h:mm a'))
+      // const timeStamp = moment().format('h:mm a')
+
+      res.render('partials/threadMessages', {
+        threadStringMessages,
+        threadStringSenderName,
+        idUsername,
+        threadTimeStamp
+      });
+    })
+
     app.get('/openMessageThread', urlEncodedParser, async (req, res) => {
       const threadPostId = req.query.threadPostId;
       const threadCmt = req.query.threadCmt;
@@ -1328,7 +1746,9 @@ app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
       //   }
       //  })
 
-       db.run('INSERT INTO Threads(comment, postId, messagerId, postsUserId) VALUES(?, ?, ?, ?)', [threadMessage, threadId, idSQL, threadUserId], function(err) {
+      const timeStamp = moment().format('h:mm a')
+
+       db.run('INSERT INTO Threads(comment, postId, messagerId, postsUserId, timeStamp) VALUES(?, ?, ?, ?, ?)', [threadMessage, threadId, idSQL, threadUserId, timeStamp], function(err) {
         if (err) {
           return console.log(err.message);
         }
@@ -1338,4 +1758,127 @@ app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
       // console.log(threadId);
 
       res.sendStatus(200);
+    })
+
+    app.get('/dmMessage', urlEncodedParser, async (req, res) => {
+      const dm = req.query.dmMessage;
+      const recieverID = req.query.recieverID;
+      const senderID = req.query.senderID;
+      const myName = req.query.myName;
+      const timeStamp = moment().format('h:mm a')
+      console.log(dm)
+      console.log(recieverID)
+
+
+      db.run('INSERT INTO Messages(message, sender, reciever, senderName, timeStamp) VALUES(?, ?, ?, ?, ?)', [dm, senderID, recieverID, myName, timeStamp], function(err) {
+        if (err) {
+          return console.log(err.message);
+        }
+    })
+    res.sendStatus(200)
+    })
+
+    app.get('/renderDmConvo', urlEncodedParser, async (req, res) => {
+      const friendID = req.query.friendID;
+      const myID = req.query.myID;
+      const cookie = Object.values(req.cookies).toString();
+
+
+      const getUsername = `SELECT username as curUsername from Users WHERE (username = '${cookie}' OR email = '${cookie}')`
+
+      const idUsername = await new Promise((resolve, reject) => {
+        db.all(getUsername, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rowz2);
+        })
+      })
+
+
+      const myDmMessages = `SELECT message DM FROM Messages WHERE (sender = ${myID} AND reciever = ${friendID}) OR (sender = ${friendID} AND reciever = ${myID})`
+
+      const DmMessages = await new Promise((resolve, reject) => {
+        db.all(myDmMessages, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const myDmSenderName = `SELECT senderName USNM FROM Messages WHERE (sender = ${myID} AND reciever = ${friendID}) OR (sender = ${friendID} AND reciever = ${myID})`
+
+      const DmSenderName = await new Promise((resolve, reject) => {
+        db.all(myDmSenderName, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+  //     `SELECT U.username as user, userId, CASE WHEN U.profileImage IS NULL THEN "/images/userIcon.png" ELSE U.profileImage END as getPic FROM Users U
+  //   INNER JOIN (SELECT CASE
+  //   WHEN F.Friend1 != ${idSQL} THEN F.Friend1
+  //   WHEN F.friend2 != ${idSQL} THEN F.Friend2
+  //   END as userId
+  //   , F.confirmed as conf
+  //   FROM Friends F
+  //   WHERE F.Friend1 = ${idSQL} OR F.Friend2 = ${idSQL}
+  //   ) as SubTable ON SubTable.userId = U.ID
+  //   WHERE conf = 1
+  // `
+
+      const myDmPic = `SELECT CASE WHEN profileImage IS NULL THEN "/images/userIcon.png" ELSE profileImage END as PROFPIC FROM Users U INNER JOIN (SELECT sender USNM FROM Messages WHERE (sender = ${myID} AND reciever = ${friendID}) OR (sender = ${friendID} AND reciever = ${myID})) as SUBTAB ON SUBTAB.USNM = U.ID`
+
+      const DmPic = await new Promise((resolve, reject) => {
+        db.all(myDmPic, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const myDmTime = `SELECT timeStamp TMSTP FROM Messages WHERE (sender = ${myID} AND reciever = ${friendID}) OR (sender = ${friendID} AND reciever = ${myID})`
+
+      const DmTime = await new Promise((resolve, reject) => {
+        db.all(myDmTime, (err, rows) => {
+          if (err) {
+            return reject(err);
+          }
+
+          // const rowz2 = Object.values(rows[0]).toString();
+          return resolve(rows);
+        })
+      })
+
+      const DmStringMessages = DmMessages.map(item => item.DM);
+      const DmStringName = DmSenderName.map(item => item.USNM);
+      const DmTimeStamp = DmTime.map(item => item.TMSTP);
+      const DmProfPic = DmPic.map(item => item.PROFPIC);
+      console.log(DmStringMessages)
+
+      // res.sendStatus(200)
+
+      res.render('partials/DmMessages', {
+        // threadStringMessages,
+        // threadStringSenderName,
+        // idUsername,
+        // threadTimeStamp
+        DmStringMessages,
+        idUsername,
+        DmStringName,
+        DmTimeStamp,
+        DmProfPic
+      });
     })
