@@ -1,0 +1,397 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<div class="container">
+
+  <a href="/index"><img src="/images/WebsiteLogo.png" alt="Logo" class="logo"></a>
+    <nav>
+        <ul>
+          <li><a href="/index" class="hover-effect"><i class="fa-solid fa-house fa-2x"></i></a></li>
+          <li><a href="/messages" class="hover-effect"><i class="fa-solid fa-envelope fa-2x"></i></a></li>
+          <!-- <li><a href="/gallary" class="hover-effect"><i class="fa-solid fa-image fa-2x"></i></a></li> -->
+        </ul>
+
+        <div class="search-icon">
+          <input type="text" id="searchBox" class="searchbar" onkeyup="findUser(document.getElementById('searchBox').value)" placeholder="Find Someone...">
+          <button class="searchBtn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="subMenuWrap2">
+          <div class="submenu2">
+            <div class="list" id="list"></div>
+            <div class="addedUser" id="added"></div>
+          </div>
+        </div>
+
+        <div id="added-friend-noti">
+
+        </div>
+
+        <div class="profile-icon-head prof-online">
+          <!-- <% if(typeof getPic != 'undefined') { %>
+                <img src="<%= getPic; %>">
+              <% } %> -->
+          <img class="profile-img" src="<% if(typeof getPic != 'undefined'){ %>
+            <%= getPic; %>
+          <% } else{ %>  
+            images/userIcon.png
+         <% } %>" onclick="openSubMenu()">
+        </div>
+        
+        <a class="notis" href="#" onclick="openNotis(); renderFriends()">
+          <i id="bell" class="fa-solid fa-bell fa-lg"></i>
+          <!-- <div class="requestAmount">
+            <% if(typeof myRequestAmt != 'undefined') { %>
+              <p><%= myRequestAmt; %></p>
+            <% } %>
+          </div> -->
+        </a>
+         <div id="numOfRequestsContainer" style="z-index: 10001; display: flex; cursor: pointer;" onclick="openNotis(); renderFriends()" class="numberRequests">
+            <div class="request-circle">
+                <div>
+                    <p id="numOfRequests" style="font-size: x-small;
+                    color: #fff;
+                    padding: .13em;
+                    margin-top: -.05vh;
+                    "><%= requestAmtValue %></p>
+                </div>
+              </div>
+          </div>
+
+        <div class="subMenuWrap" id="subMenu">
+            <div class="subMenu">
+              <div class="userInfo">
+                <img class="profile-icon-sub-menu" src="<% if(typeof getPic != 'undefined'){ %>
+                  <%= getPic; %>
+                <% } else{ %>  
+                  images/userIcon.png
+               <% } %>">
+                <% if(typeof idUsername != 'undefined') { %>
+                  <p><%= idUsername; %></p>
+                <% } %>
+              </div>
+              <hr>
+              <!-- <a href="#" class="sub-menu-link">
+                <i class="fa-regular fa-user"></i>
+                <p>Profile</p>
+                <span>></span>
+              </a> -->
+              <a href="#" class="sub-menu-link">
+                <i class="fa-solid fa-user-gear"></i>
+                <p style="cursor: pointer;" onclick="openSett()">Settings</p>
+                <span>></span>
+              </a>
+              <a href="/landing" class="sub-menu-link">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p>
+                <span>></span>
+              </a>
+            </div>
+        </div>
+
+        <div class="subMenuWrap-notis" id="subMenuNotis">
+          <div class="subMenuNotis">
+            <div class="heading" style=" border-bottom: 1px solid #ccc;">
+              <a onclick="closeNotis()" style="color: #fff; padding-top: 1vh;"><i id="exitNotis" class="fa-solid fa-x"></i></a>
+              <h3 style="letter-spacing: 1px;">Notifications</h3>
+            </div>
+            <p>Friends Requests</p>
+            <div id="requests" class="requests" style="height: 15vh; padding-top: 2vh; overflow-y: scroll;">
+              
+            </div>
+            <!-- <div style="margin-top: 6vh;" class="accountActivity">
+              <p>Activity</p>
+              <div class="activity">
+              </div>
+            </div> -->
+          </div>
+      </div>
+
+    </nav>
+  
+</div>
+
+<script>
+  let subMenu = document.getElementById("subMenu");
+  function openSubMenu() {
+    subMenu.classList.toggle("open-menu");
+  }
+
+  window.onclick = (event) => {
+    if(!event.target.matches(".profile-img")) {
+      if(subMenu.classList.contains("open-menu")) {
+        subMenu.classList.remove("open-menu");
+      }
+    }
+  }
+
+  subMenu.addEventListener('click', event => event.stopPropagation());
+
+
+  let notiMenu = document.getElementById("subMenuNotis");
+  function openNotis() {
+    if (notiMenu.classList.contains("open-menu-notis")) {
+      notiMenu.classList.remove("open-menu-notis");
+      notiMenu.classList.add("close-menu-notis");
+    } else {
+      notiMenu.classList.remove("close-menu-notis");
+      notiMenu.classList.add("open-menu-notis");
+    }
+  }
+
+  // window.onclick = (event) => {
+  //   if(!event.target.matches(".notis")) {
+  //     if(notiMenu.classList.contains("open-menu")) {
+  //       notiMenu.classList.remove("open-menu");
+  //     }
+  //   }
+  // }
+
+  notiMenu.addEventListener('click', event => event.stopPropagation());
+
+  function closeNotis() {
+    notiMenu.classList.add("close-menu-notis");
+    notiMenu.classList.remove("open-menu-notis");
+  }
+
+
+
+  // const searchBtn = document.getElementById('searchBox');
+  const searchbar = document.getElementById('searchBox').value;
+
+  function findUser(data) {
+    const xhr = new XMLHttpRequest();
+    const drop = document.getElementsByClassName('submenu2');
+    // const id = div.children[0].children[0].children[0].children[1].value;
+
+    // xhr.onload = () => {
+    //   console.log('hi');
+    // }
+      xhr.open('GET', `http://localhost:8080/userSearch?usernameSearch=` + data, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+          // data = xhr.responseText;
+          const div = document.getElementById('list');
+          div.innerHTML = xhr.responseText;
+          // if(div.getElementById('exists').value != null) {
+          //   document.getElementsByClassName('addFriend').className = "noAdd";
+          // }
+          
+          for (i = 0; i < div.childElementCount; i++) {
+            
+            var curId = div.children[i].children[1].value;
+            const idArr = div.children[i].children[2].value;
+            var idArrVals = idArr.split(',');
+
+            // for(i = 0; i < idArr.length; i++) {
+            //   if(curId == idArr[i]) {
+            //     idArr.value = '1';
+            //   }
+            // }
+
+            const existingFriendBut = div.children[i].children[4];
+            const existingFriendVal = div.children[i].children[2].value;
+            // console.log(existingFriendBut);
+            // console.log('This is my id: ' + curId);
+            // console.log(idArrVals);
+
+            // for (i = 0; i < idArrVals.length; i++) {
+                if(idArrVals.includes(curId)) {
+                existingFriendBut.className = "noAdd";
+                existingFriendBut.children[0].className = "fa-solid fa-check"
+              } 
+            // }
+            const existingFriendBut1 = div.children[i].children[4];
+            const existingFriendVal1 = div.children[i].children[2].value;
+            if(idArrVals.includes(curId) == false) {
+              const curChild = div.children[i]
+              // console.log(curChild)
+              // console.log(curChild.children[3])
+              const childVal = curChild.children[1].value;
+              // console.log(childVal)
+              // curChild.children[3].onclick = () => {
+                curChild.querySelector('button.addFriend').onclick = () =>{
+                  const xhr2 = new XMLHttpRequest();
+                  const noti = document.getElementById('added-friend-noti');
+                  xhr2.open('GET', `http://localhost:8080/addFriend?uId=` + childVal, true);
+
+                  xhr2.onreadystatechange = function() {
+                  if(xhr2.readyState === 4 && xhr2.status === 200) {
+                    existingFriendBut1.className = "noAdd";
+                    existingFriendBut1.children[0].className = "fa-solid fa-check"
+                    console.log(xhr2.responseText);
+                    noti.innerHTML = xhr2.responseText;
+                    // noti.children[0].style.add('opacity: 100%; transition: all 1s');
+                    console.log(noti.children[0].children[0])
+                    noti.children[0].children[0].classList.add('showMyAddNoti');
+                    setTimeout(function() {removeNoti(); }, 2000);
+                    function removeNoti() {
+                      noti.children[0].children[0].classList.remove('showMyAddNoti');
+                    }
+                    }
+                    
+                  }
+                  xhr2.send();
+
+              }
+            }
+          }
+          
+          // console.log(document.getElementById('list').children[0].children[1].value);
+          // console.log(document.getElementById('list').children[0].children[3]);
+          
+          
+          // for (i = 0; i < div.childElementCount; i++) {
+          //   const existingFriendBut1 = div.children[i].children[4];
+          //   const existingFriendVal1 = div.children[i].children[2].value;
+          //   if(idArrVals.includes(curId) == false) {
+          //     const curChild = div.children[i]
+          //     // console.log(curChild)
+          //     // console.log(curChild.children[3])
+          //     const childVal = curChild.children[1].value;
+          //     // console.log(childVal)
+          //     // curChild.children[3].onclick = () => {
+          //       curChild.querySelector('button.addFriend').onclick = () =>{
+          //         const xhr2 = new XMLHttpRequest();
+          //         xhr2.open('GET', `http://localhost:8080/addFriend?uId=` + childVal, true);
+
+          //         xhr2.onreadystatechange = function() {
+          //         if(xhr2.readyState === 4 && xhr2.status === 200) {
+          //           existingFriendBut1.className = "noAdd";
+          //           existingFriendBut1.children[0].className = "fa-solid fa-check"
+          //           console.log('Working');
+          //           }
+                    
+          //         }
+          //         xhr2.send();
+
+          //     }
+          //   }
+          // }
+          // console.log(div)
+
+
+
+
+
+          // drop.value(div);
+          // console.log(data);
+        }
+      }
+
+      if(data == '') {
+        const div = document.getElementById('list');
+        div.innerHTML = '';
+        return
+      }
+
+
+    xhr.send();
+
+  }
+
+  function renderFriends() {
+   const requests = document.getElementById('requests');
+   const xhr3 = new XMLHttpRequest();
+   
+   xhr3.open('GET', `http://localhost:8080/friendRequests?`, true);
+
+   xhr3.onreadystatechange = function() {
+    if(xhr3.readyState === 4 && xhr3.status === 200) {
+      requests.innerHTML = xhr3.responseText;
+      console.log(requests);
+
+      for (i = 0; i < requests.childElementCount; i++) {
+        const friendId = requests.children[i].children[0].children[0].children[1].value
+        const myId = requests.children[i].children[0].children[0].children[2].value
+        const requester = requests.children[i].children[0].children[0].children[3].value
+        const friendBtn =  requests.children[i].children[0].children[0].children[5];
+        const rejectBtn =  requests.children[i].children[0].children[0].children[6];
+        console.log(friendId)
+        console.log(myId)
+        console.log('test', friendBtn);
+
+        if(friendId != myId) {
+          requests.children[i].style = "display: none";
+        }
+
+        // const addFriendBack = requests.children[i].children[0].children[0].children[4]
+
+        const curFriend = requests.children[i];
+
+        curFriend.querySelector('button.addFriendRequest').onclick = () => {
+          const xhr4 = new XMLHttpRequest();
+          xhr4.open('GET', `http://localhost:8080/addFriendBack?friend=`+ friendId + `&requesterId=` + requester, true);
+          friendBtn.className = "noAdd2";
+          friendBtn.children[0].className = "fa-solid fa-check"
+
+          xhr4.onreadystatechange = function () {
+            if(xhr4.readyState === 4 && xhr4.status === 200) {
+              console.log('Friend Added Back.');
+              
+            }
+          }
+
+          xhr4.send();
+        }
+
+        curFriend.querySelector('button.removeFriendRequest').onclick = () => {
+          const xhr5 = new XMLHttpRequest();
+          xhr5.open('GET', `http://localhost:8080/rejectFriend?friend=`+ friendId + `&requesterId=` + requester, true);
+          rejectBtn.className = "reject";
+          // requests.children[i].children[0].children[0].classList.add('removeReject');
+          // friendBtn.children[0].className = "fa-solid fa-check"
+
+          xhr5.onreadystatechange = function () {
+            if(xhr5.readyState === 4 && xhr5.status === 200) {
+              console.log('Friend Rejected');
+              
+            }
+          }
+
+          xhr5.send();
+        }
+
+      }
+
+    }
+  }
+  xhr3.send();
+
+  }
+
+  const requestBox = document.getElementById('numOfRequestsContainer');
+  const requestAmount = document.getElementById('numOfRequests').innerHTML;
+
+
+  if(requestAmount == 0) {
+    requestBox.style.display = "none";
+  }
+  // addUserBack.addEventListener('click', function(event) {
+  //   addUserBack.target.classList.add('noAdd')
+  // })
+
+  // document.getElementById('search').onclick = addUser()
+  // function addUser() {
+  //   const xhr = new XMLHttpRequest();
+
+  //     xhr.open('GET', `http://localhost:8080/addFriend`, true);
+
+  //     xhr.onreadystatechange = function() {
+  //       if(xhr.readyState === 4 && xhr.status === 200) {
+  //         console.log(xhr.responseText);
+  //       }
+  //     }
+
+
+  //   xhr.send();
+  // }
+
+</script>

@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Lato:wght@700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Gurmukhi:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.js" integrity="sha512-FSNQjUUq97PtDnAJyMlBTH8EhV4o5X5FLVbzS9ttrdEVVbmrssJBh/PgXFQbxS+6yYx5n5irOj7de6Th0TRQZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
+    <title>Home | Buzz</title>
+  </head>
+
+
+  <body>
+    <header class="myheader" id="header">
+        <%- include('partials/header'); %>
+    </header>
+
+
+    <div id="activity" class="activityfeed">
+
+      <div id="left" class="left-sidebar">
+        <div class="main-links">
+          <a href="/landing"><i class="fa-regular fa-pen-to-square"></i>Logout</a>
+          <!-- <a href="#"><i class="fa-regular fa-newspaper fa-1x"></i>Latest News</a> -->
+          <a style="cursor: pointer;" onclick="openSett()"><i class="fa-solid fa-gear fa-1x"></i>Settings</a>
+          <a href="/messages"><i class="fa-solid fa-user-group fa-1x"></i>Friends</a>
+          <!-- <a href="/market"><i class="fa-solid fa-shop fa-1x"></i>Buzz Market</a> -->
+          <!-- <a href="#">See More</a> -->
+        </div>
+<a href="/premium">
+        <div class="ad-container">
+          <div class="glass"></div>
+          <div class="ad-content">
+            <!-- <i style="color: #fff;" class="fa-solid fa-code fa-2xl"></i> -->
+            <img style="width: 3vw;" src="/images/logo-hexa.png"/><i style="color: #fff; position: absolute; margin-left: 3.5vw; margin-top: 2vh;" class="fa-solid fa-plus"></i>
+            <!-- <img src="/images/bee.png" alt="Logo" class="premium-bee"> -->
+            <!-- <img src="/images/bee.png" alt="Logo" class="premium-bee2"> -->
+            <!-- <img src="/images/bee.png" alt="Logo" class="premium-bee3"> -->
+            <!-- <img src="/images/bee.png" alt="Logo" class="premium-bee4"> -->
+            <!-- <img src="/images/bee.png" alt="Logo" class="premium-bee5">
+            <img src="/images/bee.png" alt="Logo" class="premium-bee6">
+            <img src="/images/bee.png" alt="Logo" class="premium-bee7">
+            <img src="/images/bee.png" alt="Logo" class="premium-bee8"> -->
+          </div>
+          <div class="ad-label">
+            <p style="width: fit-content;
+            font-family: 'Anek Gurmukhi', sans-serif;
+                font-optical-sizing: auto; font-size: smaller;
+                font-size: x-large;
+                color: #fff;">Buzz Plus</p>
+            <p style="width: fit-content;
+            font-family: 'Anek Gurmukhi', sans-serif;
+                font-optical-sizing: auto; font-size: smaller;
+                font-size: smaller;
+                color: #fff; margin-top: -2vh;">Coming Soon!</p>
+          </div>
+        </div>
+</a>
+
+        <div class="subMenuWrap-sett close-menu-sett" id="subMenuSett">
+          <div class="subMenuSett">
+            <div class="sett-sections">
+              <div class="tabs">
+                <!-- <div id="vertical-line" class="vertical-line"></div>
+                <div id="tab1" class="tab1">
+                  <h3>General</h3>
+                </div>
+                <div id="tab2" class="tab2">
+                  <h3>Notifications</h3>
+                </div> -->
+                <div id="tab3" class="tab3">
+                  <h3>Profile</h3>
+                </div>
+                <!-- <div id="tab4" class="tab4">
+                  <h3>Theme</h3>
+                </div>
+                <div id="tab5" class="tab5">
+                  <h3>Privacy</h3>
+                </div> -->
+              </div>
+              <div class="setts">
+                <div class="exit-setts">
+                  <a onclick="closeSetts()" style="color: #ffffff; padding-top: 1vh; position: absolute; cursor: pointer; margin-left: 27vw;"><i id="exitSetts" class="fa-solid fa-x"></i></a>
+                </div>
+                <div id="setts-gen" class="setts-gen">
+                  <!-- <p>test</p> -->
+                </div>
+                <div id="setts-noti" class="setts-noti">
+                  <!-- <p>Emails</p>
+                  <p>SMS</p>
+                  <p>Updates</p> -->
+                </div>
+                <div id="setts-prof" class="setts-prof">
+                  <form style="margin-left: -1vw;" action="/uploadPic" method="POST" enctype="multipart/form-data">
+                    <fieldset>
+                      <div class="setting">
+                          <p>Profile Image</p>
+                          <input name="myProfImg" id="myProfImg" style="display: none;" type="file"/>
+                          <a style="cursor: pointer;" onclick="picUpload()" id="attachPic" class="attach-icon"><i style="color: #fff;" class="fa-solid fa-cloud-arrow-up"></i></a>
+                          <button id="uploadMyPic" class="uploadMyPic" type="submit"><p>Upload Profile Image</p></button>
+                      </div>
+                    </fieldset>
+                  </form>
+                  <div class="setting">
+                    <p>Username</p>
+                    <input style="z-index: 999;" id="changeUsername" class="newUsername" required type="text" placeholder="Enter New Username"/>
+                    <button onclick="changeMyUserName()" class="changeUsername"><p>Confirm Username</p></button>
+                  </div>
+                  <div class="badUsername" id="badUsername">
+
+                  </div>
+                  <!-- <div class="setting">
+                    <p>Password</p>
+                  </div> -->
+                </div>
+                <!-- <div id="setts-theme" class="setts-theme">
+                  <p>display:</p>
+                  <i class="fa-solid fa-moon fa"></i>
+                  <i class="fa-solid fa-sun fa"></i>
+                </div>
+                <div id="setts-priv" class="setts-priv"> -->
+                  <!-- <p>test</p> -->
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+<!-- 
+        <div class="shortcuts-header">
+          <p>Shortcuts</p>
+        </div>
+        <div class="shortcuts">
+          <a href="#"><img src="images/shortcut-1.png">Software Development</a>
+          <a href="#"><img src="images/shortcut-2.png">Animal Awareness</a>
+          <a href="#"><img src="images/shortcut-3.png">Travel Now!</a>
+        </div> -->
+      </div>
+
+      <div id="main" class="main-feed">
+        <div class="create-post-back">
+          <div class="create-post">
+            <div class="main-sub-title">
+              <h4>Create Post</h4>
+            </div>
+          </div>
+
+          <!-- <img class="profile-img" src="<% if(typeof getPic != 'undefined'){ %>
+            <%= getPic; %>
+          <% } else{ %>  
+            images/userIcon.png
+         <% } %>" onclick="openSubMenu()"> -->
+
+          <div class="write-post-container">
+            <div class="profile-icon">
+              <img class="profile-img" src="<% if(typeof getPic != 'undefined'){ %>
+                <%= getPic; %>
+              <% } else{ %>  
+                images/userIcon.png
+             <% } %>">
+              <div>
+                <% if(typeof idUsername != 'undefined') { %>
+                  <p><%= idUsername; %></p>
+                <% } %>
+                <small>Public<i class="fa-solid fa-caret-down"></i></small>
+              </div>
+            </div>
+
+            <form action="/userPost" method="POST" enctype="multipart/form-data">
+              <fieldset>
+                <div class="input-post">
+                  <textarea required rows="3" id="createNewPost" name="createNewPost" placeholder="What's New?"></textarea>
+                </div>
+
+                <div class="my-post-icons">
+                  <div class="share-attach-icons" style="display: inline-flex;">
+                    <input name="myImg" id="myImg" style="display: none;" type="file"/>
+                    <a style="cursor: pointer;" onclick="fileUpload()" id="attachFile" class="attach-icon"><i class="fa-solid fa-paperclip"></i></a>
+                    <button type="submit" class="post-icon"><p>Post</p>&nbsp;&nbsp;<i style="padding-top: .7vh;" class="fa-solid fa-square-check"></i></button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+
+          </div>
+        </div>
+
+        <div id="listPosts">
+          <% if(typeof renPosts != 'undefined') { %>
+            <% renPosts.forEach(function(renPost) { %>
+            <div class="main-feed-post">
+              <div class="posters-info">
+                <div  class="profile-icon">
+                  <a class="rendered-post" href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><img class="profile-img" src="<% if(typeof renPost.pic != 'undefined'){ %>
+                    <%= renPost.pic; %>
+                  <% } %>"></a>
+                  <div>
+                    <input value="<%= (renPost.conf); %>" type="hidden"/>
+                    <a href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><p><%= (renPost.curUsnm); %></p></a>
+                  </div>
+                  <input id="postID" value="<%= (renPost.postID); %>" type="hidden"/>
+                </div>
+                <div style="margin-top: -4.5vh; margin-left: 17vw; color: #000000;
+                font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto; font-size: smaller;" class="postDtTm">
+                  <%= renPost.postDtTm; %>
+                </div>
+              </div>
+              <div class="post-divider"></div>
+              <div class="userPostBox">
+                  
+                    
+  
+                     
+                        <div class="userPost">
+                          <p><%= (renPost.cmt); %></p><br>
+                        </div>
+                    
+                
+              </div>
+              <div class="attachment-box">
+
+
+
+                <div class="postFileUpload">
+                  <img src="<%= (renPost.img); %>">
+                </div>
+
+
+
+              </div>
+
+              <div class="like-dislike-comment">
+                <!-- <a href="#"class="share-icon"><i class="fa-solid fa-arrow-trend-up"></i></i></a> -->
+                <a style="cursor: pointer;" id="comment" onclick="messageThread('<%= (renPost.postID); %>', '<%= (renPost.cmt); %>', '<%= (renPost.postIdNum) %>', '<%= (renPost.curUsnm); %>'), populateMessages('<%= (renPost.postID); %>')" class="comment"><i class="fa-regular fa-comment"></i></a>  
+                <div id="cmtNum" class="numberComments">
+                  <div class="comment-circle">
+                      <!-- <div class="comment-amount"> -->
+                          <p class="cmtAmtP" onclick="messageThread('<%= (renPost.postID); %>', '<%= (renPost.cmt); %>', '<%= (renPost.postIdNum) %>', '<%= (renPost.curUsnm); %>'), populateMessages('<%= (renPost.postID); %>')" style="font-size: x-small; color: #fff; padding: .13em; cursor: pointer;"><%= renPost.commentAmt %></p>
+                      <!-- </div> -->
+                    </div>
+                </div>
+                <input id="listLikes" type="hidden" value="<%= (renPost.listLikes) %>"/>
+                <input id="listDislikes" type="hidden" value="<%= (renPost.listDislike) %>"/>
+                <a style="cursor: pointer;" id="up" onclick="likePost('<%= (renPost.postID); %>'), checkLikes('<%= (renPost.postID); %>')" class="thumbs-up"><i class="fa-regular fa-thumbs-up"></i></a>
+                <div id="numberLikes" class="numberLikes">
+                  <div class="like-circle">
+                      <div class="like-amount">
+                          <p id="likes-<%= (renPost.postID); %>" onclick="likePost('<%= (renPost.postID); %>'), checkLikes('<%= (renPost.postID); %>')" style="font-size: x-small; color: #fff; padding: .13em; cursor: pointer;"><%= renPost.likes %></p>
+                      </div>
+                    </div>
+                </div>
+                <a style="cursor: pointer;" id="down" onclick="dislikePost('<%= (renPost.postID); %>'), checkDislikes('<%= (renPost.postID); %>')" class="thumbs-down"><i class="fa-regular fa-thumbs-down"></i></a>
+                <div id="numberLikes" class="numberDislikes">
+                  <div class="like-circle">
+                      <div class="like-amount">
+                        <p id="dislikes-<%= (renPost.postID); %>" onclick="dislikePost('<%= (renPost.postID); %>'), checkDislikes('<%= (renPost.postID); %>')" style="font-size: x-small; color: #fff; padding: .13em; cursor: pointer;"><%= renPost.dislikes %></p>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          <% } %>
+        </div>
+
+      </div>
+      
+      <div id="right" class="right-sidebar">
+        <div class="section-title">
+          <h3>Activity</h3>
+        </div>
+
+        <div class="sub-title">
+          <h4>Friends</h4>
+          <a href="/messages">See All</a>
+        </div>
+        
+        <div id="friendSection" class="friend-section" style="overflow-y: scroll; height: 25vh;">
+          <% if(typeof friendName != 'undefined') { %>
+            <% for(let i =0; i<friendName.length; i++) { %>
+              <div class="online-contacts" style="margin-bottom: -16vh; margin-top: -11vh;">
+                <div class="online-friend">
+                  <a id="imgA" href="http://localhost:8080/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="padding-top: .3em; height: 5px; width: fit-content;"><div id="seeFriendImg" class="online">
+                    <img style="height: 44px;" src="<% if(typeof friendPic[i] != 'undefined'){ %>
+                      <%= friendPic[i]; %>
+                    <% } else{ %>  
+                      images/userIcon.png
+                   <% } %>">
+                  </div></a>
+                  <a id="textA" href="http://localhost:8080/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="height: 15px; padding-top: 1em; cursor: pointer;
+                    color: #000;
+                    font-size: medium; font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto;
+        letter-spacing: .15px;"><p id="seeFriendText"><%= (friendName[i]); %></p></a>
+                  <input id="friendID" type="hidden" value="<%= friendId[i] %>"/>
+                  <div class="friend-options">
+                    <a id="hideOptionsPane" onclick="showFriendOptions('<%= (friendName[i]); %>')" style="padding-top: 4em; cursor: pointer; z-index: 1000;"><i class="fa-solid fa-ellipsis fa-lg"></i></a>
+                    <div id="friend-<%= (friendName[i]); %>" class="friend-options-wrap hideFriendsWrap">
+                      <div class="blocker" onclick="hidePopup('<%= (friendName[i]); %>')"></div>
+                      <div onclick="deleteFriend('<%= (friendName[i]); %>')" style=" z-index: 1000;" class="friend-drop-down">
+                          <li><i class="fa-solid fa-user-minus"></i></li>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+          <% } %>
+        </div>
+
+        <!-- <div class="online-contacts">
+          <div class="online">
+            <img src="images/contact-2.png">
+          </div>
+          <p>Jim Carrol</p>
+        </div>
+
+        <div class="online-contacts">
+          <div class="online">
+            <img src="images/contact-3.png">
+          </div>
+          <p>Kevin Bennet</p>
+        </div> -->
+
+        <!-- <div class="sub-title">
+          <h4>Buzz Market</h4> -->
+          <!-- <a href="/market">See All</a> -->
+        <!-- </div> -->
+        
+          <!-- <div class="thumbTiles swiper"> -->
+            <!-- Additional required wrapper -->
+            <!-- <div class="swiper-wrapper"> -->
+            <!-- Slides -->
+            <!-- <div id="swiper" class="swiper-slide">
+              <div class="ad-1">
+                <img src="images/bike-for-sale.png">
+                <h3>Blue Mountain Bike <i>$200.00</i></h3>
+              </div>
+            </div>
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-2">
+                <img src="images/ad-2.png">
+                <h3>Angleton Sofa Sandstone <i>$350.00</i></h3>
+              </div>
+            </div>
+            <div id="swiper" class="swiper-slide">
+              <div class="ad-3">
+                <img src="images/ad-3.png">
+                <h3>Logitech Mouse <i>$59.99</i></h3>
+              </div>
+            </div>
+            </div> -->
+        
+            <!-- If we need navigation buttons -->
+            <!-- <div id="prev" class="swiper-button-prev"></div>
+            <div id="next" class="swiper-button-next"></div>
+        
+        </div> -->
+          <!-- <div class="ad-1">
+            <img src="images/bike-for-sale.png">
+            <h3>Blue Mountain Bike <i>$200.00</i></h3>
+          </div>
+          <div class="ad-2">
+            <img src="images/ad-2.png">
+            <h3>Angleton Sofa Sandstone <i>$350.00</i></h3>
+          </div>
+          <div class="ad-3">
+            <img src="images/ad-3.png">
+            <h3>Logitech Mouse <i>$59.99</i></h3>
+          </div> -->
+
+
+      </div>
+
+      <div id="deleteFriendWrap" class="deleteFriendWrap hideDeleteFriendWrap">
+        <div id="deleteFriendHeader" class="deleteFriendHeader">
+          <p style="padding-right: .25vw; font-size: smaller; font-family: 'Anek Gurmukhi', sans-serif;
+          font-optical-sizing: auto;
+          letter-spacing: .15px; margin-left: 2vw;" id="deleteTitle">Are you Sure You Want to Remove</p> <p style="font-size: smaller; font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto;
+        letter-spacing: .15px;" id="deleteUser"></p> <a onclick="closeDeletionBox()"><i style="color: #fff;
+    margin-top: -2vh;
+    padding-left: 2.5vw; cursor: pointer;" class="fa-solid fa-xmark"></i></a>
+        </div>
+        <div class="deleteFriendBox">
+          <form  action="/deleteFriend" method="POST">
+            <fieldset style="display: flex;">
+              <!-- <div onclick="deleteThisFriend(document.getElementById('deleteUser').innerHTML)" class="yesDelete">
+                <p style="color: #fff;">Yes</p>
+              </div>
+              <div onclick="closeDeletionBox()" class="noDelete">
+                <p style="color: #fff;">No</p>
+              </div> -->
+              <input id="deleteMe" name="deleteMe" type="hidden" value="">
+              <button type="submit" style="border: none;" class="yesDelete">
+                <p style="color: #fff;">Yes</p>
+              </button>
+              <div onclick="closeDeletionBox()" class="noDelete">
+                <p style="color: #fff; font-size: smaller;">No</p>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+
+      <!-- <div class="subMenuWrap-Thread close-menu-thread" id="subMenuThread">
+        <div class="subMenuThread">
+          <div class="thread-container">
+
+          </div>
+        </div>
+      </div> -->
+      <div style="position: fixed;" id="sideThread" class="sideThread hiddenThread">
+        <div id="innerThread" class="sideThread">
+            <div class="thread-title">
+              <p>Comments</p>
+              <a onclick="closeComments()"><i class="fa-solid fa-xmark"></i></a>
+            </div>
+            <div class="message-box">
+
+              <div id="threadComment" class="threadComment">
+                <p style="overflow: hidden;" id="threadCmt"></p> <i class="fa-solid fa-arrow-turn-down"></i>
+                <input type="hidden" id="threadID"/>
+                <input type="hidden" id="threadUserId"/>
+                <input type="hidden" id="curUsername"/>
+                <!--<input type="hidden" id="threadUsername"/> -->
+                <div id="usernames">
+
+                </div>
+                
+              </div>
+
+              <div id="listThread" class="listThread">
+               
+              </div>
+
+              <div class="message-input">
+                <input  id="threadText" type="text" placeholder="What's up?"/>
+                <button id="enterThreadMessage" onclick="postThread(document.getElementById('threadText').value), socketMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div style="position: fixed;" id="sideNav" class="sideNav hiddenNavbar">
+      <div class="sideHome">
+          <ul>
+              <li><a onclick="viewHome()"><i class="fa-solid fa-house fa-lg"></i></a></li>
+              <li><a onclick="viewProjects()"><i class="fa-solid fa-diagram-project fa-lg"></i></a></li>
+              <li><a onclick="viewContact()"><i class="fa-solid fa-message fa-lg"></i></a></li>
+          </ul>
+      </div>
+  </div> -->
+      
+    </div>
+
+    <!-- <script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+</script> -->
+
+  </body>
+
+
+  <script src="EJSapp.js"></script>
+
+  <style>
+    .swiper-button-prev, .swiper-button-next {
+    height: 100%;
+    width: 4%;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+}
+  </style>
+
+  <script>
+
+const socket = io('http://localhost:8080');
+
+socket.on("connection");
+
+const swiper = new Swiper('.swiper', {
+    // Optional parameters
+    spaceBetween: 15,
+    slidesPerView: 1,
+    loop: true,
+    freemode: true,
+    speed: 1000,
+  
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+
+    
+    const listPosts = document.getElementById('listPosts');
+
+    //  for (i=0; i < listPosts.childElementCount; i++) {
+    //         // console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+    //         const postID = listPosts.children[i].children[0].children[0].children[2].value;
+    //         const what = listPosts.children[i].children[3].children[2];
+    //         // var numOfLikes = listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0];
+
+    //         listPosts.children[i].children[3].children[2].onclick = () => {
+    //           const xhr = new XMLHttpRequest();
+    //           xhr.open('GET', `http://localhost:8080/postReaction?like=` + 1 + `&likedPostID=` + postID, true);
+
+    //         xhr.onreadystatechange = function() {
+    //           if(xhr.readyState === 4 && xhr.status === 200) {
+    //             listPosts.innerHTML = xhr.responseText;
+    //             console.log(listPosts);
+    //             // console.log(numOfLikes);
+    //             console.log(what);
+    //             console.log(postID);
+    //             console.log(xhr.responseText);
+    //             }
+              
+    //           }
+    //           xhr.send();
+    //         }
+    //       }
+
+    function checkLikes(data) {
+      const xhr = new XMLHttpRequest();
+      const dislikes = document.getElementById('dislikes-'+data);
+      if (dislikes.innerHTML == 0) {
+        dislikes.innerHTML = 0
+      } else {
+        dislikes.innerHTML = dislikes.innerHTML - 1;
+      }
+      
+      // const postID = document.getElementById('postID');
+      // const numOfLikes = document.getElementById('numberLikes');
+
+      // xhr.open('GET', `http://localhost:8080/checkLikePost?likedPostID` + data, true);
+
+      // xhr.onreadystatechange = function() {
+      //   if(xhr.readyState === 4 && xhr.status === 200) {
+          
+
+
+
+
+          // for (i=0; i < listPosts.childElementCount; i++) {
+          //   console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+
+          //   listPosts.children[i].children[3].children[2].onclick = () => {
+          //     listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+          //   }
+            
+          // }
+
+      //     dislikes.innerHTML = xhr.responseText;
+      //   }
+      // }
+      // xhr.send();
+    }
+
+    function checkDislikes(data) {
+      const xhr = new XMLHttpRequest();
+      const likes = document.getElementById('likes-'+data);
+      const listLikes = document.getElementById('listLikes').value;
+      console.log(listLikes)
+      console.log(likes.innerHTML + 'test')
+      if (likes.innerHTML == 0) {
+        likes.innerHTML = 0
+      } else {
+        likes.innerHTML = likes.innerHTML - 1;
+      }
+      // const postID = document.getElementById('postID');
+      // const numOfLikes = document.getElementById('numberLikes');
+
+      // xhr.open('GET', `http://localhost:8080/checkdislikePost?likedPostID` + data, true);
+
+      // xhr.onreadystatechange = function() {
+      //   if(xhr.readyState === 4 && xhr.status === 200) {
+          
+
+
+
+
+          // for (i=0; i < listPosts.childElementCount; i++) {
+          //   console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+
+          //   listPosts.children[i].children[3].children[2].onclick = () => {
+          //     listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+          //   }
+            
+          // }
+
+          // dislikes.innerHTML = xhr.responseText;
+      //   }
+      // }
+      // xhr.send();
+    }
+      
+    function likePost(data) {
+      const likes = document.getElementById('likes-'+data);
+      console.log(data);
+      // const like = document.getElementById('up');
+      const xhr = new XMLHttpRequest();
+      // const postID = document.getElementById('postID');
+      // const numOfLikes = document.getElementById('numberLikes');
+
+      xhr.open('GET', `http://localhost:8080/likePost?like=` + 1 + `&likedPostID=` + data, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+          
+
+          console.log(listPosts);
+          console.log(likes);
+
+
+
+          // for (i=0; i < listPosts.childElementCount; i++) {
+          //   console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+
+          //   listPosts.children[i].children[3].children[2].onclick = () => {
+          //     listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+          //   }
+            
+          // }
+
+          likes.innerHTML = xhr.responseText;
+        }
+      }
+      xhr.send();
+    }
+
+    function dislikePost(data) {
+      const dislikes = document.getElementById('dislikes-'+data);
+      console.log(data);
+      // const like = document.getElementById('up');
+      const xhr = new XMLHttpRequest();
+      // const postID = document.getElementById('postID');
+      // const numOfLikes = document.getElementById('numberLikes');
+
+      xhr.open('GET', `http://localhost:8080/dislikePost?like=` + 1 + `&likedPostID=` + data, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+          
+
+          console.log(listPosts);
+          console.log(dislikes);
+
+
+
+          // for (i=0; i < listPosts.childElementCount; i++) {
+          //   console.log(listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML);
+
+          //   listPosts.children[i].children[3].children[2].onclick = () => {
+          //     listPosts.children[i].children[3].children[2].children[1].children[0].children[0].children[0].innerHTML = xhr.responseText
+          //   }
+            
+          // }
+
+          dislikes.innerHTML = xhr.responseText;
+        }
+      }
+      xhr.send();
+    }
+
+    const sett = document.getElementById('subMenuSett');
+    const notis = document.getElementById('subMenuNotis');
+
+    function openSett() {
+      if (sett.classList.contains("open-menu-sett")) {
+        sett.classList.remove("open-menu-sett");
+        sett.classList.add("close-menu-sett");
+    } else {
+      sett.classList.remove("close-menu-sett");
+      sett.classList.add("open-menu-sett");
+      notis.classList.remove("open-menu-notis");
+      sett1.style.display = 'block';
+      sett2.style.display = 'none';
+      sett3.style.display = 'none';
+      sett4.style.display = 'none';
+      sett5.style.display = 'none';
+      anime({
+      targets: '#vertical-line',
+      translateY: 0,
+      easing: 'linear',
+      duration: 150
+    });
+    }
+    const settBtn = document.getElementById('uploadMyPic')
+    settBtn.style.display = "none";
+    }
+
+    // const vert = document.getElementById('vertical-line');
+    // const tab1 = document.getElementById('tab1');
+    // const tab2 = document.getElementById('tab2');
+    // const tab3 = document.getElementById('tab3');
+    // const tab4 = document.getElementById('tab4');
+    // const tab5 = document.getElementById('tab5');
+
+    // const sett1 = document.getElementById('setts-gen');
+    // const sett2 = document.getElementById('setts-noti');
+    // const sett3 = document.getElementById('setts-prof');
+    // const sett4 = document.getElementById('setts-theme');
+    // const sett5 = document.getElementById('setts-priv');
+
+    // tab1.onclick = () => {
+    //   console.log(tab1.getBoundingClientRect());
+    //       anime({
+    //   targets: '#vertical-line',
+    //   translateY: 0,
+    //   easing: 'linear',
+    //   duration: 150
+    // });
+    // sett1.style.display = 'block';
+    // sett2.style.display = 'none';
+    // sett3.style.display = 'none';
+    // sett4.style.display = 'none';
+    // sett5.style.display = 'none';
+    // }
+    // tab2.onclick = () => {
+    //   console.log(tab2.getBoundingClientRect());
+    //       anime({
+    //   targets: '#vertical-line',
+    //   translateY: 136,
+    //   easing: 'linear',
+    //   duration: 150
+    // });
+    // sett2.style.display = 'block';
+    // sett1.style.display = 'none';
+    // sett3.style.display = 'none';
+    // sett4.style.display = 'none';
+    // sett5.style.display = 'none';
+    // }
+    // tab3.onclick = () => {
+    //   console.log(tab3.getBoundingClientRect());
+    //       anime({
+    //   targets: '#vertical-line',
+    //   translateY: 272,
+    //   easing: 'linear',
+    //   duration: 150
+    // });
+    // sett3.style.display = 'block';
+    // sett1.style.display = 'none';
+    // sett2.style.display = 'none';
+    // sett4.style.display = 'none';
+    // sett5.style.display = 'none';
+    // }
+    // tab4.onclick = () => {
+    //   console.log(tab4.getBoundingClientRect());
+    //       anime({
+    //   targets: '#vertical-line',
+    //   translateY: 410,
+    //   easing: 'linear',
+    //   duration: 150
+    // });
+    // sett4.style.display = 'block';
+    // sett1.style.display = 'none';
+    // sett2.style.display = 'none';
+    // sett3.style.display = 'none';
+    // sett5.style.display = 'none';
+    // }
+    // tab5.onclick = () => {
+    //   console.log(tab5.getBoundingClientRect());
+    //       anime({
+    //   targets: '#vertical-line',
+    //   translateY: 546,
+    //   easing: 'linear',
+    //   duration: 150
+    // });
+    // sett5.style.display = 'block';
+    // sett1.style.display = 'none';
+    // sett2.style.display = 'none';
+    // sett3.style.display = 'none';
+    // sett4.style.display = 'none';
+    // }
+
+    function closeSetts() {
+      if (sett.classList.contains("open-menu-sett")) {
+        sett.classList.remove("open-menu-sett");
+        sett.classList.add("close-menu-sett");
+    } else {
+      sett.classList.remove("close-menu-sett");
+      sett.classList.add("open-menu-sett");
+    }
+    }
+
+    function populateMessages(data) {
+
+      const threadData = data;
+      const listThread = document.getElementById('listThread');
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', `http://localhost:8080/populateMessages?threadPostID=` + threadData, true);
+
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+
+          const listOfThreadMessages = xhr.responseText;
+          // listOfThreadMessages.style.display = "none";
+          listThread.innerHTML = listOfThreadMessages;
+
+          for(i=0; i<listThread.childElementCount; i++) {
+            const bubbleFlag = listThread.children[i];
+            // console.log(listThread.children[i].children[0].children[0].value)
+            // console.log(listThread.children[i].children[0].children[1].textContent)
+
+            if(listThread.children[i].children[0].children[0].value == listThread.children[i].children[0].children[1].textContent) {
+              bubbleFlag.classList.add('right')
+            } else {
+              bubbleFlag.classList.add('left')
+            }
+          }
+
+          
+
+          // listThread.childNodes.forEach(element => {
+          //   console.log(element)
+          // });
+
+          // console.log(listOfThreadMessages);
+
+        }
+      }
+
+      xhr.send();
+    }
+
+    const comment = document.getElementById('comment');
+    const sideThread = document.getElementById('sideThread');
+    const innerThread = document.getElementById('innerThread');
+    // const sideNav = document.getElementById('sideNav');
+
+    function messageThread(data, data2, data3, data4) {
+
+      const threadId = data;
+      const threadCmt = data2;
+      const threadUserId = data3;
+      const threadUsername = data4;
+      const threadCmtCont = document.getElementById('threadCmt');
+      const hiddenThreadId = document.getElementById('threadID');
+      const hiddenThreadUserId = document.getElementById('threadUserId');
+      const curUsername = document.getElementById('curUsername');
+      const threadUsernameCont = document.getElementById('threadUsername');
+      const usernames = document.getElementById('usernames');
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', `http://localhost:8080/openMessageThread?threadPostId=` + threadId + `&threadCmt=` + data2, true);
+
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+
+            if (sideThread.classList.contains('hiddenThread')) {
+              threadCmtCont.innerHTML = threadCmt;
+              hiddenThreadId.value = threadId;
+              hiddenThreadUserId.value = threadUserId;
+              sideThread.classList.remove('hiddenThread');
+              sideThread.classList.add('showThread');
+            } else {
+              sideThread.classList.add('hiddenThread');
+              sideThread.classList.remove('showThread');
+            }
+
+            usernames.innerHTML = xhr.responseText;
+            
+            // console.log('working');
+            // dislikes.innerHTML = xhr.responseText;
+          }
+        }
+        xhr.send();
+
+    // if (sideNav.classList.contains('hiddenNavbar')) {
+    //     sideNav.classList.remove('hiddenNavbar');
+    //     sideNav.classList.add('showNavbar');
+    // } else {
+    //     sideNav.classList.add('hiddenNavbar');
+    //     sideNav.classList.remove('showNavbar');
+    // }
+}
+
+const keyPressThread = document.getElementById('threadText');
+keyPressThread.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+
+    document.getElementById('enterThreadMessage').click();
+  }
+})
+
+const left = document.getElementById('left');
+left.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const main = document.getElementById('left');
+main.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const right = document.getElementById('right');
+right.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const activity = document.getElementById('activity');
+activity.onclick = function(e) {
+  if(activity = e.target){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+const header = document.getElementById('header');
+header.onclick = function(e) {
+  if(!innerThread.contains(e.target)){
+      sideThread.classList.add('hiddenThread');
+      sideThread.classList.remove('showThread');
+  }
+}
+
+// window.onclick = (event) => {
+//   if(!event.target.matches(comment)) {
+//     if(sideThread.classList.contains("showThread")) {
+//       sideThread.classList.remove("showThread");
+//       sideThread.classList.add("hiddenThread");
+//     }
+//   }
+// }
+
+
+socket.on('message', (data) => {
+        // socket.emit('message', data);
+        const listThread = document.getElementById('listThread');
+        const time = document.createElement('p');
+        const li = document.createElement('div');
+        const name = document.createElement('p');
+        const header = document.createElement('div');
+        const temp = document.createElement('div');
+        // const myPostId = document.createElement('input');
+        const curUsername = document.getElementById('usernames').children[0].value
+        const messageThreadPostId = document.getElementById('usernames').children[2].value;
+        // const curUsername = document.getElementById('curUsername');
+        // const hiddenId = document.createElement('input');
+        // hiddenId.value = data.id;
+        name.innerHTML = data.username;
+        time.innerHTML = data.time;
+        // myPostId.value = data.messageThreadPostId;
+        // myPostId.setAttribute("id", "wrongSocket");
+        time.style.paddingLeft = ".3vw";
+        li.innerHTML = data.text;
+        header.appendChild(name);
+        header.appendChild(time);
+        header.classList.add('message-header');
+        temp.appendChild(header);
+        temp.appendChild(li);
+        // temp.appendChild(myPostId);
+        if (data.messageThreadPostId == messageThreadPostId) {
+          if (data.username == curUsername) {
+          temp.classList.add("bubble");
+          temp.classList.add("right");
+        } else {
+          temp.classList.add("bubble");
+          temp.classList.add("left");
+        }
+        } else {
+          temp.style.display = "none";
+        }
+
+        const threadTextInput = document.getElementById('threadText')
+        threadTextInput.value = "";
+        
+        // hiddenId.classList.add("bubble");
+        // hiddenId.classList.add("right");
+        // hiddenId.type = "hidden";
+        listThread.appendChild(temp);
+        // li.appendChild(hiddenId);
+        // document.getElementById('rightThread').classList.add('showThreadRight');
+        listThread.scrollTop = listThread.scrollHeight;
+      })
+const socketMessage = () => {
+        const messageInput = document.getElementById('threadText').value
+        const curUsername = document.getElementById('usernames').children[0].value
+        const receiverUsername = document.getElementById('usernames').children[1].value
+        const messageThreadPostId = document.getElementById('threadID').value;
+        if (messageInput == "") {
+          return
+        }
+        socket.emit('message', messageInput, curUsername, receiverUsername, messageThreadPostId);
+}
+
+    function postThread(data) {
+
+      const xhr = new XMLHttpRequest();
+      const postID = document.getElementById('threadID').value;
+      const threadUserId = document.getElementById('threadUserId').value;
+
+      xhr.open('GET', `http://localhost:8080/messageThread?threadMessage=` + data + `&threadID=` + postID + `&threadUserId=` + threadUserId, true);
+
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+            
+            console.log('working');
+            // dislikes.innerHTML = xhr.responseText;
+          }
+        }
+        xhr.send();
+    }
+
+    function fileUpload() {
+      const fileUpload = document.getElementById('myImg')
+      fileUpload.click();
+    }
+
+    function picUpload() {
+      const fileUpload = document.getElementById('myProfImg')
+      const fileUploadBtn = document.getElementById('uploadMyPic')
+      fileUpload.click();
+      fileUploadBtn.style.display = "block";
+    }
+
+    function changeMyUserName() {
+      const xhr = new XMLHttpRequest();
+      const newUsername = document.getElementById('changeUsername');
+      const usernameAlert = document.getElementById('badUsername');
+
+      if(newUsername.value == "") {
+        return
+      }
+
+      xhr.open('GET', `http://localhost:8080/changeUsername?newUsername=` + newUsername.value, true);
+
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.status === 200) {
+
+            usernameAlert.innerHTML = xhr.responseText;
+            
+            console.log('working');
+            // dislikes.innerHTML = xhr.responseText;
+          }
+        }
+        xhr.send();
+    }
+
+    // const allPosts = document.getElementById('listPosts');
+
+    // for(i=0; i<allPosts.childElementCount; i++) {
+    //     const curPost = allPosts.children[i]
+    //     console.log(curPost)
+    //     const commentAmount = curPost.children[4].children[1]
+        // const cmtAmt = document.getElementById('cmtNum').children[0].children[0].children[0]
+        // const cmtBox = document.getElementById('cmtNum')
+        // console.log(cmtAmt)
+        // console.log(cmtBox)
+        // if (cmtAmt.innerHTML == '') {
+        //   cmtBox.style.display = "none";
+        // }
+    // }
+
+    function closeComments() {
+      if (!sideThread.classList.contains('hiddenThread')) {
+              
+              sideThread.classList.add('hiddenThread');
+              sideThread.classList.remove('showThread');
+        }
+      }
+
+      
+
+      function showFriendOptions(data) {
+        const friend = document.getElementById('friend-'+data);
+        const friendOptions = document.getElementById(friend);
+        
+        console.log(friend)
+        if(friend.classList.contains("hideFriendsWrap")) {
+          friend.classList.remove("hideFriendsWrap")
+        } else {
+          friend.classList.add("hideFriendsWrap")
+        }
+      }
+
+      function hidePopup(data) {
+        const friend = document.getElementById('friend-'+data);
+        const friendOptions = document.getElementById(friend);
+        friend.classList.add('hideFriendsWrap');
+        }
+
+        function deleteFriend(data) {
+          const deleteHeader = document.getElementById("deleteFriendHeader");
+          const friendName = document.createElement('p');
+          const deleteWrapper = document.getElementById('deleteFriendWrap');
+          const deleteUser = document.getElementById('deleteUser');
+          const deleteMe = document.getElementById('deleteMe')
+          deleteUser.innerHTML = data;
+          deleteMe.value = data;
+          // deleteHeader.appendChild(friendName)
+
+          if(deleteWrapper.classList.contains("hideDeleteFriendWrap")) {
+            deleteWrapper.classList.remove("hideDeleteFriendWrap");
+          }
+        }
+
+        function closeDeletionBox() {
+          const deleteWrapper = document.getElementById('deleteFriendWrap');
+          if (!deleteWrapper.classList.contains('hideDeleteFriendWrap')) {
+              
+            deleteWrapper.classList.add('hideDeleteFriendWrap');
+              // sideThread.classList.remove('showThread');
+        }
+        }
+
+        // function deleteThisFriend(data) {
+        //   const xhr = new XMLHttpRequest();
+
+        // xhr.open('get', `http://localhost:8080/deleteFriend?deleteUsername=` + data, true);
+
+        // xhr.onreadystatechange = function() {
+        //   if(xhr.readyState === 4 && xhr.status === 200) {
+
+        //     console.log('working');
+        //     // dislikes.innerHTML = xhr.responseText;
+        //   }
+        // }
+        // xhr.send();
+        // }
+
+    
+  </script>
+
+</html>

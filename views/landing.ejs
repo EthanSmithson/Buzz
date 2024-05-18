@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <title>Sign Up | Buzz</title>
+  </head>
+
+
+  <body onload="hideGoodAlert()" class="landing-up-page" style="background-image: linear-gradient( 135deg, #3C8CE7 10%, #00EAFF 100%);
+  height: 100vh;">
+  <header>
+    <img src="/images/WebsiteLogo.png" alt="Logo" class="logo">
+  </header>
+    <!-- <header>
+      <div class="container" style="height: 7vh;">
+
+        <img src="/images/WebsiteLogo.png" alt="Logo" class="logo">
+          <nav>
+              <ul>
+        
+              </ul>
+      
+              <div class="search-icon">
+              
+              </div>
+              
+              <div class="profile-icon-head prof-online">
+              </div>
+      
+          </nav>
+        
+      </div> 
+    </header> -->
+
+    <!-- <img class="man" src="images/manOnPhone.jpg">
+    <img class="woman" src="images/woman.jpg"> -->
+    <!-- <div class="middle">
+        <img id="img-land" class="img-land" src="images/WebsiteLogoBlue.png">
+    </div> -->
+
+    <!-- <img class="plane" src="images/paperAgain2.jpg"> -->
+
+    <div class="sign-up-err2">
+      <% if(typeof alert2 != 'undefined') { %>
+          <div class="alert2">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            <p><%= (alert2); %></p><br>
+          </div>
+  <% } %>
+
+    <% if(typeof alert3 != 'undefined') { %>
+      <div class="alert3">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <p><%= (alert3); %></p><br>
+      </div>
+  <% } %>
+
+  <% if(typeof alert4 != 'undefined') { %>
+    <div class="alert4">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+      <p><%= (alert4); %></p><br>
+    </div>
+<% } %>
+
+<div id="GoodPasswordReset" class="GoodPasswordReset">
+  <% if(typeof goodResendAlert != 'undefined') { %>
+    <p id="resendGoodAlertMessage"><%= goodResendAlert; %></p>
+    <i class="fa-solid fa-check"></i>
+  <% } %>  
+</div>
+<div id="confirmEmail" class="confirmEmail">
+  <% if(typeof newUser != 'undefined') { %>
+    <p id="resendGoodAlertMessage"><%= newUser; %></p>
+    <i class="fa-solid fa-exclamation"></i>
+  <% } %>  
+</div>
+  <div class="flex-login">
+      <form action="/login" method="POST">
+        <fieldset>
+          <div class="landing-title">
+            <h3>Sign In</h3>
+          </div>
+          <div class="flex-username-signin-land">
+            <div class="flex-signin-name-land">
+              <input type="text" id="logusername" name="logusername" required placeholder="Enter Username or Email">
+            </div>
+          </div>
+
+          <div class="flex-password-signin-land">
+            <div class="flex-signin-password-land">
+              <input type="password" id="logpswd" name="logpswd" required placeholder="Enter Password">
+            </div>
+          </div>
+
+          <div class="flex-forgot-password-email-land">
+            <a id="get-new-password" onclick="resendPassword()" style="text-decoration: none; cursor: pointer;" class="forgot-link"><p style="font-size: small;">Forgot Password or Username?</p></a>
+          </div>
+
+          <div class="flex-landing-button">
+            <button type="submit">Login</button>
+          </div>
+        </fieldset>
+        <a href="/signup" style="text-decoration: none;" class="flex-landing-button2" type="submit"><p style="font-size: small;">Register</p></a>
+      </form>
+  </div>
+
+  <div id="password-reset-box" class="password-reset-box">
+    <div class="reset-header">
+      <h3>Reset Password</h3>
+      <a><i id="closeReset" style="cursor: pointer;" class="fa-solid fa-xmark"></i></a>
+    </div>
+    <div class="inner-reset">
+      <form action="/sendNewLink" method="POST">
+        <fieldset>
+          <div class="reset-email">
+            <input id="resetEmail" name="resetEmail" type="text" required placeholder="Enter Email"/>
+          </div>
+          <div style="position: absolute;" id="resend-error" class="resend-error">
+            <% if(typeof resendAlert != 'undefined') { %>
+              <p id="resendAlertMessage"><%= resendAlert; %></p>
+              <i class="fa-solid fa-circle-exclamation"></i>
+            <% } %>  
+          </div>
+          <div class="submit-resend">
+            <button type="submit">Send Reset</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+    
+    </div>
+
+    
+
+  </body>
+
+
+
+  <script src="EJSapp.js"></script>
+
+  <script>
+    const passwordReset = document.getElementById('get-new-password');
+    const resendBox = document.getElementById('password-reset-box');
+    const closeReset = document.getElementById('closeReset');
+    const resetAlert = document.getElementById('resendAlertMessage');
+    const resendAlertBox = document.getElementById('resend-error');
+    const emailResetInput = document.getElementById('resetEmail');
+    closeReset.onclick = function() {closeResetNow()};
+
+    function resendPassword() {
+//       const xhr = new XMLHttpRequest();
+
+// xhr.open('GET', `http://localhost:8080/sendNewLink?`, true);
+
+//   xhr.onreadystatechange = function() {
+//     if(xhr.readyState === 4 && xhr.status === 200) {
+      
+//       console.log('working');
+//       // dislikes.innerHTML = xhr.responseText;
+//     }
+//   }
+//   xhr.send();
+
+      emailResetInput.value = "";
+
+      resendBox.style.display = "block";
+
+    }
+
+
+    function closeResetNow() {
+      resendBox.style.display = "none";
+      resendAlertBox.style.display = 'none';
+      resetAlert.innerHTML = ''
+    }
+
+    if(resetAlert.innerHTML != '') {
+      console.log('heyo')
+      resendBox.style.display = "block";
+    }
+
+    // const goodAlert = document.getElementById('resendGoodAlertMessage')
+
+    // if( goodAlert.innerHTML != "") {
+    //   setTimeout(function() {removeNoti(); }, 2000);
+    //                 function removeNoti() {
+    //                   goodAlert.innerHTML = "";
+    //                 }
+    // }
+
+    function hideGoodAlert() {
+      const goodAlert = document.getElementById('GoodPasswordReset')
+      setTimeout(function() {removeNoti(); }, 4000);
+                    function removeNoti() {
+                      goodAlert.style.display = "none";
+                    }
+    }
+  </script>
+
+</html>

@@ -1,0 +1,24 @@
+<% for(let i =0; i<threadStringMessages.length; i++) { %>
+    <div id="myBubble" class="bubble">
+        <div class="message-header">
+            <input type="hidden" id="idUsername" value="<%= idUsername; %>"/>
+            <p id="senderName"><%= threadStringSenderName[i]; %></p>
+            <p style="padding-left: .3vw;"><%= threadTimeStamp[i]; %></p>
+        </div>
+        <div><%= threadStringMessages[i]; %></div>
+    </div>
+<% } %>
+
+<!-- <script>
+    const bubble = document.getElementById("myBubble");
+    const curUser = document.getElementById('idUsername').value;
+    const sender = document.getElementById('senderName');
+
+    console.log('please work: ', curUser)
+
+    if (curUser == sender) {
+        bubble.classList.add('right');
+    } else {
+        bubble.classList.add('left');
+    }
+</script> -->

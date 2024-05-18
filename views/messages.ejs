@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/EJSstyles.css" rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7febf94e83.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Gurmukhi:wght@100..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
+    <title>Messages | Buzz</title>
+  </head>
+
+
+  <body>
+    <header class="myheader">
+      <%- include('partials/header'); %>
+    </header>
+
+    <div class="friends-list">
+      <div class="friends-list-header">
+        <h2  style="font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto;
+        color: #fff; font-size: large;
+        letter-spacing: .15px;">Friends</h2>
+      </div>
+      <div class="friends">
+        <div class="indivdual-user">
+          <% if(typeof friendName != 'undefined') { %>
+            <% for(let i =0; i<friendName.length; i++) { %>
+              <div class="online-contacts2">
+                <div class="online-friend2">
+                  <div class="user-info">
+                    <a onclick="messageNameHeader('<%= (friendName[i]); %>', '<%= friendId[i] %>'), renderDmConvo('<%= friendId[i] %>')" id="imgA" style="margin-top: 8vh; height: 44px;"><div style="display: flex;
+                      height: fit-content;" id="seeFriendImg" class="online">
+                      <img style="width: 100%; margin-left: -.01vw; height: 44px;" src="<% if(typeof friendPic[i] != 'undefined'){ %>
+                        <%= friendPic[i]; %>
+                      <% } else{ %>  
+                        images/userIcon.png
+                     <% } %>">
+                    </div></a>
+                    <a onclick="messageNameHeader('<%= (friendName[i]); %>', '<%= friendId[i] %>'), renderDmConvo('<%= friendId[i] %>')" id="textA" style="height: 5px; margin-top: 8vh; cursor: pointer;
+                      color: #000;
+                      font-size: medium; text-decoration: none; z-index: 999;"><p id="seeFriendText"><%= (friendName[i]); %></p></a>
+                    <input id="friendID" type="hidden" value="<%= friendId[i] %>"/>
+                  </div>
+                  
+                </div>
+              </div>
+              <% } %>
+          <% } %>
+        </div>
+        
+      </div>
+    </div>
+
+
+    <div class="messages-box">
+      <div class="message-header2">
+        <h3 style="font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto;
+        color: #fff;
+        padding-top: 1.5vh;
+        letter-spacing: .15px;" id="friend-convo-name"></h3>
+        <input id="friend-convo-name-id" type="hidden"/>
+      </div>
+      <div class="message-space">
+        <div class="inner-message-space">
+          <div id="dm-area" class="text-message-area">
+            
+          </div>
+          <div class="text-message-bar">
+            <input  id="threadText" type="text" placeholder="What's up?"/>
+            <button id="enterThreadMessage" onclick="postThread(document.getElementById('threadText').value), socketMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+            <input id="myID" type="hidden" value="<%= idSQL %>"/>
+            <input id="myProfPIC" type="hidden" value="<%= getPic; %>"/>
+            <input id="myName" type="hidden" value="<%= idUsername %>"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="message-feed">
+        <div class="left-sidebar-messages">
+            <div class="sidebar-title">
+              <p>Your Messages</p>
+              <a href="#"><i class="fa-regular fa-square-plus fa-xl"></i></a>
+            </div>
+            
+            <div class="messages-searchbar">
+              <input type="text" class="search" placeholder="Search Messages...">
+              <button type="submit" class="messages-search-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            <div class="message-list">
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-1.png">
+                </div>
+                <p>Janice Johnson</p>
+              </div>
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-2.png">
+                </div>
+                <p>Jim Carrol</p>
+              </div>
+      
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-3.png">
+                </div>
+                <p>Kevin Bennet</p>
+              </div>
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-4.jpg">
+                </div>
+                <p>Alicia Picker</p>
+              </div>
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-5.jpg">
+                </div>
+                <p>Justin Jefferson</p>
+              </div>
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-6.jpg">
+                </div>
+                <p>Jermaine Halloway</p>
+              </div>
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-7.jpg">
+                </div>
+                <p>Carissa Stephenson</p>
+              </div>
+
+              <div class="online-contacts-messages">
+                <div class="offline">
+                  <img src="images/contact-8.webp">
+                </div>
+                <p>John Baker</p>
+              </div>
+
+            </div>
+        </div>
+
+        <div class="main-messages">
+            <div class="main-messages-header">
+              <h2>Whats The Buzz?</h2>
+            </div>
+
+            <div class="contact-message-info">
+              <div class="online-contacts-messages">
+                <div class="neutral">
+                  <img src="images/contact-2.png">
+                </div>
+                <h2>Jim Carrol</h2>
+              </div>
+            </div>
+            
+            <div class="message-drop-down">
+                <button onclick="dropDownFunction()" class="dropbtn"><i class=" dropbtn fa-solid fa-phone fa-lg"></i><i class=" dropbtn fa-solid fa-caret-down"></i></button>
+                <div id="myDropDown" class="dropdown-content">
+                  <a href="#"><i class="fa-solid fa-phone fa-sm"></i></a>
+                  <a href="#"><i class="fa-solid fa-video fa-sm"></i></a>
+                </div> -->
+                <!--<select class="dropbtn" id="option">
+                  <option value="phone"><i class="fa-solid fa-phone"></i>Phone</option>
+                  <option value="phone"><i class="fa-solid fa-video"></i></option>
+                </select>-->
+            <!-- </div>
+
+            <div class="text-area">
+              <div class="message-bar">
+                <input type="text" placeholder=" Start Typing...">
+                <button type="submit"><i class="fa-solid fa-arrow-up"></i></button>
+              </div>
+            </div>
+
+        </div>
+    </div> -->
+    
+
+
+  </body>
+
+  <script>
+    const socket = io('http://localhost:8080');
+    socket.on("connection");
+
+    const messageBoxHeader = document.getElementById('friend-convo-name');
+    const messageBoxHeaderID = document.getElementById('friend-convo-name-id');
+    const senderID = document.getElementById('myID');
+    const senderName = document.getElementById('myName');
+    function messageNameHeader(data, data2) {
+      const userclicked = data;
+      const userClickedID = data2;
+      console.log("***", userclicked);
+      messageBoxHeader.innerHTML = userclicked;
+      messageBoxHeaderID.value = data2;
+    }
+
+
+    function postThread(data) {
+
+      if (messageBoxHeaderID.value == "") {
+          return
+        }
+
+      if (data == "") {
+          return
+        }
+
+const xhr = new XMLHttpRequest();
+// const dmID = document.getElementById('threadID').value;
+// const threadUserId = document.getElementById('threadUserId').value;
+
+xhr.open('GET', `http://localhost:8080/dmMessage?dmMessage=` + data + `&recieverID=` + messageBoxHeaderID.value + `&senderID=` + senderID.value  + `&myName=` + senderName.value, true);
+
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4 && xhr.status === 200) {
+      
+      console.log('working');
+      // dislikes.innerHTML = xhr.responseText;
+    }
+  }
+  xhr.send();
+}
+
+function renderDmConvo(data) {
+
+  if (messageBoxHeaderID.value == "") {
+          return
+        }
+  // const friendID = data;
+  const DmArea = document.getElementById('dm-area')
+
+  const xhr = new XMLHttpRequest();
+// const dmID = document.getElementById('threadID').value;
+// const threadUserId = document.getElementById('threadUserId').value;
+
+xhr.open('GET', `http://localhost:8080/renderDmConvo?friendID=` + data + `&myID=` + senderID.value, true);
+
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4 && xhr.status === 200) {
+
+      DmArea.innerHTML = xhr.responseText;
+
+      for(i=0; i<DmArea.childElementCount; i++) {
+            const bubbleFlag = DmArea.children[i];
+            // console.log(listThread.children[i].children[0].children[0].value)
+            // console.log(listThread.children[i].children[0].children[1].textContent)
+
+            if(DmArea.children[i].children[0].children[0].value == DmArea.children[i].children[0].children[1].textContent) {
+              bubbleFlag.classList.add('Dmright')
+            } else {
+              bubbleFlag.classList.add('Dmleft')
+              bubbleFlag.classList.remove('Dmbubble')
+              bubbleFlag.classList.add('DmbubbleReceive')
+            }
+          }
+
+      // console.log(DmArea.children[0].children[0])
+      
+      console.log('working');
+      // dislikes.innerHTML = xhr.responseText;
+    }
+  }
+  xhr.send();
+}
+
+const keyPressThread = document.getElementById('threadText');
+keyPressThread.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+
+    document.getElementById('enterThreadMessage').click();
+  }
+})
+
+const socketMessage = () => {
+
+  if (messageBoxHeaderID.value == "") {
+          return
+        }
+
+        const messageInput = document.getElementById('threadText').value;
+        const curUsername = document.getElementById('myName').value;
+        const otherUserId = document.getElementById('friend-convo-name-id').value;
+        const otherUserName = document.getElementById('friend-convo-name').innerHTML;
+        const senderId = document.getElementById('myID').value;
+        const senderPic = document.getElementById('myProfPIC').value;
+        // const receiverUsername = document.getElementById('usernames').children[1].value
+        // const messageThreadPostId = document.getElementById('threadID').value;
+        if (messageInput == "") {
+          return
+        }
+        socket.emit('DM', messageInput, curUsername, otherUserId, otherUserName, senderId, senderPic);
+
+}
+
+socket.on('DM', (data) => {
+
+        // console.log('dm???')
+        // socket.emit('message', data);
+        const listThread = document.getElementById('dm-area');
+        const time = document.createElement('p');
+        const li = document.createElement('div');
+        const name = document.createElement('p');
+        const header = document.createElement('div');
+        const temp = document.createElement('div');
+        const picBox = document.createElement('div');
+        picBox.classList.add("DMprofile-icon-head");
+        picBox.classList.add("DMprof-online");
+        const pic = document.createElement('img');
+        pic.classList.add('DMprofile-img');
+        pic.src = data.senderPic;
+        picBox.appendChild(pic);
+        const myPostId = document.createElement('input');
+        const curUsername = document.getElementById('myName').value
+        const otherUserId = document.getElementById('friend-convo-name-id').value
+        const otherUserName = document.getElementById("friend-convo-name").innerHTML
+        const myID = document.getElementById('myID').value
+        // const messageThreadPostId = document.getElementById('usernames').children[2].value;
+        // const curUsername = document.getElementById('curUsername');
+        // const hiddenId = document.createElement('input');
+        // hiddenId.value = data.id;
+        name.innerHTML = data.curUsername;
+        time.innerHTML = data.time;
+        myPostId.value = data.otherUserId;
+        myPostId.type = "hidden";
+        // myPostId.setAttribute("id", "wrongSocket");
+        time.style.paddingLeft = ".3vw";
+        li.innerHTML = data.text;
+        header.appendChild(name);
+        header.appendChild(time);
+        header.classList.add('message-header');
+        temp.appendChild(header);
+        temp.appendChild(li);
+        temp.appendChild(myPostId);
+        temp.appendChild(picBox);
+        if (data.otherUserId == myID && data.senderId == otherUserId || data.senderId == myID) {
+          if (data.curUsername == curUsername) {
+          temp.classList.add("Dmbubble");
+          temp.classList.add("Dmright");
+        } else {
+          temp.classList.add("DmbubbleReceive");
+          temp.classList.add("Dmleft");
+        }
+        } else {
+          temp.style.display = "none";
+        }
+
+        const threadTextInput = document.getElementById('threadText')
+        threadTextInput.value = "";
+        
+        // hiddenId.classList.add("bubble");
+        // hiddenId.classList.add("right");
+        // hiddenId.type = "hidden";
+        listThread.appendChild(temp);
+        // li.appendChild(hiddenId);
+        // document.getElementById('rightThread').classList.add('showThreadRight');
+        listThread.scrollTop = listThread.scrollHeight;
+
+})
+
+
+  </script>
+
+
+
+  <script src="EJSapp.js"></script>
+
+</html>

@@ -1,0 +1,25 @@
+<% for(let i =0; i<nameList.length; i++) { %>
+    <div id="list" style="display: flex; margin-top: -1vh; margin-bottom: 2vh;">
+      <img style="    overflow: hidden;
+      display: flex;
+      border-radius: 50%;
+      height: 44px;
+      margin-top: 1vh;
+      margin-right: .8vw;
+      object-fit: cover;
+      background: #eaeaea;
+      width: 45px;
+      border: 1px solid #000000;" class="profile-img" src="<% if(typeof userPic[i] != 'undefined'){ %>
+        <%= userPic[i]; %>
+      <% } else{ %>  
+        images/userIcon.png
+     <% } %>">
+        <input id="userId" name="uId" value="<%= idList[i]; %>" type="hidden"/>
+        <input id="exists" name="exists" value="<%= existsList; %>" type="hidden"/>
+        <p style="color: #fff; margin-top: 2.6vh; font-family: 'Anek Gurmukhi', sans-serif;
+        font-optical-sizing: auto;
+        color: #fff; font-size: medium;
+        letter-spacing: .15px;" id="usernameAdd"><%= nameList[i]; %></p>
+        <button class="addFriend" style="margin-top: 2vh;" type="button" id="search"><i class="fa-sharp fa-solid fa-plus fa-lg"></i></button>
+    </div>
+<% } %>

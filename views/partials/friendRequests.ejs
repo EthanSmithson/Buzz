@@ -1,0 +1,31 @@
+  <% for(let i =0; i<friendName.length; i++) { %>
+    <div id="friendRequestList" style="display: flex; margin-top: 1.5vh; margin-bottom: 2vh;">
+      <div class="friendRequests">
+        <div class="request" style="display: inline-flex; margin-left: 1vw;">
+          <img style="    overflow: hidden;
+      display: flex;
+      border-radius: 50%;
+      height: 44px;
+      margin-top: 1vh;
+      margin-right: 2vw;
+      object-fit: cover;
+      background: #eaeaea;
+      width: 45px;
+      border: 1px solid #000000;" class="profile-img" src="<% if(typeof userPic[i] != 'undefined'){ %>
+        <%= userPic[i]; %>
+      <% } else{ %>  
+        images/userIcon.png
+     <% } %>">
+          <input type="hidden" value="<%= friendId[i] %>"/>
+          <input type="hidden" value="<%= idSQL %>"/>
+          <input type="hidden" value="<%= requester[i] %>"/>
+          <p style="margin-left: -3vh; margin-top: 2.6vh; color: #fff; font-family: 'Anek Gurmukhi', sans-serif;
+          font-optical-sizing: auto;
+          color: #fff; font-size: medium;
+          letter-spacing: .15px;"><%= friendName[i]; %></p>
+          <button class="addFriendRequest" type="button" id="addback"><i style="color: #fff; margin-right: .5vw;" class="fa-sharp fa-solid fa-plus fa-lg"></i></button>
+          <button class="removeFriendRequest" type="button" id="rejectFriend"><i style="color: #fff; margin-right: .5vw;" class="fa-sharp fa-solid fa-minus fa-lg"></i></button>
+        </div>
+      </div>
+    </div>
+<% } %>

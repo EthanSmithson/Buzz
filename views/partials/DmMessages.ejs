@@ -1,0 +1,27 @@
+<% for(let i =0; i<DmStringMessages.length; i++) { %>
+        <div id="myBubble" class="Dmbubble">
+            <div class="message-header">
+                <input type="hidden" id="idUsername" value="<%= idUsername; %>"/>
+                <p id="senderName"><%= DmStringName[i]; %></p>
+                <p style="padding-left: 1vw;"><%= DmTimeStamp[i]; %></p>
+            </div>
+            <div><%= DmStringMessages[i]; %></div>
+            <div class="DMprofile-icon-head DMprof-online">
+                <img class="DMprofile-img" src="<%= DmProfPic[i]; %>">
+            </div>
+        </div>
+<% } %>
+
+<!-- <script>
+    const bubble = document.getElementById("myBubble");
+    const curUser = document.getElementById('idUsername').value;
+    const sender = document.getElementById('senderName');
+
+    console.log('please work: ', curUser)
+
+    if (curUser == sender) {
+        bubble.classList.add('right');
+    } else {
+        bubble.classList.add('left');
+    }
+</script> -->
