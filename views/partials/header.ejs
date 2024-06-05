@@ -173,7 +173,7 @@
     // xhr.onload = () => {
     //   console.log('hi');
     // }
-      xhr.open('GET', `http://localhost:8080/userSearch?usernameSearch=` + data, true);
+      xhr.open('GET', `/userSearch?usernameSearch=` + data, true);
 
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4 && xhr.status === 200) {
@@ -220,7 +220,7 @@
                 curChild.querySelector('button.addFriend').onclick = () =>{
                   const xhr2 = new XMLHttpRequest();
                   const noti = document.getElementById('added-friend-noti');
-                  xhr2.open('GET', `http://localhost:8080/addFriend?uId=` + childVal, true);
+                  xhr2.open('GET', `/addFriend?uId=` + childVal, true);
 
                   xhr2.onreadystatechange = function() {
                   if(xhr2.readyState === 4 && xhr2.status === 200) {
@@ -301,7 +301,7 @@
    const requests = document.getElementById('requests');
    const xhr3 = new XMLHttpRequest();
    
-   xhr3.open('GET', `http://localhost:8080/friendRequests?`, true);
+   xhr3.open('GET', `/friendRequests?`, true);
 
    xhr3.onreadystatechange = function() {
     if(xhr3.readyState === 4 && xhr3.status === 200) {
@@ -328,7 +328,7 @@
 
         curFriend.querySelector('button.addFriendRequest').onclick = () => {
           const xhr4 = new XMLHttpRequest();
-          xhr4.open('GET', `http://localhost:8080/addFriendBack?friend=`+ friendId + `&requesterId=` + requester, true);
+          xhr4.open('GET', `/addFriendBack?friend=`+ friendId + `&requesterId=` + requester, true);
           friendBtn.className = "noAdd2";
           friendBtn.children[0].className = "fa-solid fa-check"
 
@@ -344,7 +344,7 @@
 
         curFriend.querySelector('button.removeFriendRequest').onclick = () => {
           const xhr5 = new XMLHttpRequest();
-          xhr5.open('GET', `http://localhost:8080/rejectFriend?friend=`+ friendId + `&requesterId=` + requester, true);
+          xhr5.open('GET', `/rejectFriend?friend=`+ friendId + `&requesterId=` + requester, true);
           rejectBtn.className = "reject";
           // requests.children[i].children[0].children[0].classList.add('removeReject');
           // friendBtn.children[0].className = "fa-solid fa-check"

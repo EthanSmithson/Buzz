@@ -201,12 +201,12 @@
             <div class="main-feed-post">
               <div class="posters-info">
                 <div  class="profile-icon">
-                  <a class="rendered-post" href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><img class="profile-img" src="<% if(typeof renPost.pic != 'undefined'){ %>
+                  <a class="rendered-post" href="/seeFriend?viewFriend=<%= renPost.postIdNum %>"><img class="profile-img" src="<% if(typeof renPost.pic != 'undefined'){ %>
                     <%= renPost.pic; %>
                   <% } %>"></a>
                   <div>
                     <input value="<%= (renPost.conf); %>" type="hidden"/>
-                    <a href="http://localhost:8080/seeFriend?viewFriend=<%= renPost.postIdNum %>"><p><%= (renPost.curUsnm); %></p></a>
+                    <a href="/seeFriend?viewFriend=<%= renPost.postIdNum %>"><p><%= (renPost.curUsnm); %></p></a>
                   </div>
                   <input id="postID" value="<%= (renPost.postID); %>" type="hidden"/>
                 </div>
@@ -291,14 +291,14 @@
             <% for(let i =0; i<friendName.length; i++) { %>
               <div class="online-contacts" style="margin-bottom: -16vh; margin-top: -11vh;">
                 <div class="online-friend">
-                  <a id="imgA" href="http://localhost:8080/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="padding-top: .3em; height: 5px; width: fit-content;"><div id="seeFriendImg" class="online">
+                  <a id="imgA" href="/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="padding-top: .3em; height: 5px; width: fit-content;"><div id="seeFriendImg" class="online">
                     <img style="height: 44px;" src="<% if(typeof friendPic[i] != 'undefined'){ %>
                       <%= friendPic[i]; %>
                     <% } else{ %>  
                       images/userIcon.png
                    <% } %>">
                   </div></a>
-                  <a id="textA" href="http://localhost:8080/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="height: 15px; padding-top: 1em; cursor: pointer;
+                  <a id="textA" href="/seeFriend?viewFriend=<%= friendId[i] %>" onclick="seeFriend('<%= friendId[i] %>')" style="height: 15px; padding-top: 1em; cursor: pointer;
                     color: #000;
                     font-size: medium; font-family: 'Anek Gurmukhi', sans-serif;
         font-optical-sizing: auto;
@@ -487,7 +487,7 @@
 
   <script>
 
-const socket = io('http://localhost:8080');
+const socket = io('');
 
 socket.on("connection");
 
@@ -517,7 +517,7 @@ const swiper = new Swiper('.swiper', {
 
     //         listPosts.children[i].children[3].children[2].onclick = () => {
     //           const xhr = new XMLHttpRequest();
-    //           xhr.open('GET', `http://localhost:8080/postReaction?like=` + 1 + `&likedPostID=` + postID, true);
+    //           xhr.open('GET', `/postReaction?like=` + 1 + `&likedPostID=` + postID, true);
 
     //         xhr.onreadystatechange = function() {
     //           if(xhr.readyState === 4 && xhr.status === 200) {
@@ -546,7 +546,7 @@ const swiper = new Swiper('.swiper', {
       // const postID = document.getElementById('postID');
       // const numOfLikes = document.getElementById('numberLikes');
 
-      // xhr.open('GET', `http://localhost:8080/checkLikePost?likedPostID` + data, true);
+      // xhr.open('GET', `/checkLikePost?likedPostID` + data, true);
 
       // xhr.onreadystatechange = function() {
       //   if(xhr.readyState === 4 && xhr.status === 200) {
@@ -584,7 +584,7 @@ const swiper = new Swiper('.swiper', {
       // const postID = document.getElementById('postID');
       // const numOfLikes = document.getElementById('numberLikes');
 
-      // xhr.open('GET', `http://localhost:8080/checkdislikePost?likedPostID` + data, true);
+      // xhr.open('GET', `/checkdislikePost?likedPostID` + data, true);
 
       // xhr.onreadystatechange = function() {
       //   if(xhr.readyState === 4 && xhr.status === 200) {
@@ -616,7 +616,7 @@ const swiper = new Swiper('.swiper', {
       // const postID = document.getElementById('postID');
       // const numOfLikes = document.getElementById('numberLikes');
 
-      xhr.open('GET', `http://localhost:8080/likePost?like=` + 1 + `&likedPostID=` + data, true);
+      xhr.open('GET', `/likePost?like=` + 1 + `&likedPostID=` + data, true);
 
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4 && xhr.status === 200) {
@@ -650,7 +650,7 @@ const swiper = new Swiper('.swiper', {
       // const postID = document.getElementById('postID');
       // const numOfLikes = document.getElementById('numberLikes');
 
-      xhr.open('GET', `http://localhost:8080/dislikePost?like=` + 1 + `&likedPostID=` + data, true);
+      xhr.open('GET', `/dislikePost?like=` + 1 + `&likedPostID=` + data, true);
 
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4 && xhr.status === 200) {
@@ -803,7 +803,7 @@ const swiper = new Swiper('.swiper', {
       const listThread = document.getElementById('listThread');
       const xhr = new XMLHttpRequest();
 
-      xhr.open('GET', `http://localhost:8080/populateMessages?threadPostID=` + threadData, true);
+      xhr.open('GET', `/populateMessages?threadPostID=` + threadData, true);
 
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4 && xhr.status === 200) {
@@ -858,7 +858,7 @@ const swiper = new Swiper('.swiper', {
 
       const xhr = new XMLHttpRequest();
 
-      xhr.open('GET', `http://localhost:8080/openMessageThread?threadPostId=` + threadId + `&threadCmt=` + data2, true);
+      xhr.open('GET', `/openMessageThread?threadPostId=` + threadId + `&threadCmt=` + data2, true);
 
         xhr.onreadystatechange = function() {
           if(xhr.readyState === 4 && xhr.status === 200) {
@@ -1016,7 +1016,7 @@ const socketMessage = () => {
       const postID = document.getElementById('threadID').value;
       const threadUserId = document.getElementById('threadUserId').value;
 
-      xhr.open('GET', `http://localhost:8080/messageThread?threadMessage=` + data + `&threadID=` + postID + `&threadUserId=` + threadUserId, true);
+      xhr.open('GET', `/messageThread?threadMessage=` + data + `&threadID=` + postID + `&threadUserId=` + threadUserId, true);
 
         xhr.onreadystatechange = function() {
           if(xhr.readyState === 4 && xhr.status === 200) {
@@ -1049,7 +1049,7 @@ const socketMessage = () => {
         return
       }
 
-      xhr.open('GET', `http://localhost:8080/changeUsername?newUsername=` + newUsername.value, true);
+      xhr.open('GET', `/changeUsername?newUsername=` + newUsername.value, true);
 
         xhr.onreadystatechange = function() {
           if(xhr.readyState === 4 && xhr.status === 200) {
@@ -1133,7 +1133,7 @@ const socketMessage = () => {
         // function deleteThisFriend(data) {
         //   const xhr = new XMLHttpRequest();
 
-        // xhr.open('get', `http://localhost:8080/deleteFriend?deleteUsername=` + data, true);
+        // xhr.open('get', `/deleteFriend?deleteUsername=` + data, true);
 
         // xhr.onreadystatechange = function() {
         //   if(xhr.readyState === 4 && xhr.status === 200) {

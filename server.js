@@ -86,6 +86,7 @@ async function getUsername(cookie) {
 }
 
 async function getID(cookie) {
+  // console.log(cookie)
   const query = `SELECT ID from Users WHERE (cookie = $cookie)`
   return await new Promise((resolve, reject) => {
     db.get(
@@ -316,7 +317,7 @@ async function renderPosts(idSQL) {
 
 app.get('/messages', async (req, res) => {
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idUsername = await getUsername(cookie);
 
@@ -349,7 +350,7 @@ app.get('/messages', async (req, res) => {
  
  app.get('/gallery', async (req, res) => {
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idUsername = await getUsername(cookie);
 
@@ -371,7 +372,8 @@ app.get('/messages', async (req, res) => {
 
 
  app.get('/userSearch', async (req, res) => {
-  const cookie = Object.values(req.cookies).toString();
+  // const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
   const usernameSearch = req.query.usernameSearch;
 
 //populates the search criteria entered by user in searchbar
@@ -408,7 +410,7 @@ app.get('/messages', async (req, res) => {
 
 
  app.get('/index', async (req, res) => {
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
 // standard query to pull a current users profile image
@@ -1117,7 +1119,7 @@ app.post('/uploadPic', upload2.single('myProfImg'), urlEncodedParser, async (req
   console.log(req.files)
 
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
   const idSQL = await getID(cookie);
 
 // error handeling for whether the users actually selected new profile image, if not it return to default image
@@ -1143,7 +1145,7 @@ app.post('/uploadPic', upload2.single('myProfImg'), urlEncodedParser, async (req
 app.post('/userPost', upload.single('myImg'), urlEncodedParser, async (req, res) => {
     console.log(req.files)
 
-    const cookie = Object.values(req.cookies).toString();
+    const cookie = req.cookies.userCookie;
     const idSQL = await getID(cookie);
 
   // created as time stamp for the new post
@@ -1184,7 +1186,7 @@ app.post('/userPost', upload.single('myImg'), urlEncodedParser, async (req, res)
 
 
 app.get('/addFriend', urlEncodedParser, async (req, res)  =>  {
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
   const Id = req.query.uId;
 
   console.log(Id);
@@ -1245,7 +1247,7 @@ FROM (
 })
 
 app.get('/friendRequests', urlEncodedParser, async (req, res) => {
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
 // pulls all pending friend requests and renders them in the notification center
@@ -1317,7 +1319,7 @@ app.get('/rejectFriend', urlEncodedParser, async (req, res) => {
 })
 
 app.get('/seeFriend', urlEncodedParser, async (req, res) => {
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
   
@@ -1443,7 +1445,7 @@ app.get('/likePost' , urlEncodedParser, async (req, res) => {
   const like = req.query.like;
   const likedPostID = req.query.likedPostID;
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
   const idSQL = await getID(cookie);
   // checking to see if this user has already interacted with this post
   const getPostInfo = `SELECT COUNT(postId) as postInfo from LikeDislikePost WHERE postId = ${likedPostID} AND userId = ${idSQL}`
@@ -1612,7 +1614,7 @@ const updateDislikes = `SELECT COUNT(dislike) as dislike from LikeDislikePost WH
 app.get('/checkLikePost', urlEncodedParser, async (req, res) => {
   const likedPostID = req.query.likedPostID;
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
 
@@ -1641,7 +1643,7 @@ app.get('/checkLikePost', urlEncodedParser, async (req, res) => {
 app.get('/checkDislikePost', urlEncodedParser, async (req, res) => {
   const likedPostID = req.query.likedPostID;
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
 
@@ -1672,7 +1674,7 @@ app.get('/checkDislikePost', urlEncodedParser, async (req, res) => {
 app.get('/dislikePost' , urlEncodedParser, async (req, res) => {
   const likedPostID = req.query.likedPostID;
 
-   const cookie = Object.values(req.cookies).toString();
+   const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
 
@@ -1843,7 +1845,7 @@ const updatelikes = `SELECT COUNT(like) as like from LikeDislikePost WHERE (post
 
     app.get('/populateMessages', urlEncodedParser, async (req, res) => {
 
-      const cookie = Object.values(req.cookies).toString();
+      const cookie = req.cookies.userCookie;
       const postId = req.query.threadPostID;
 
       const myThreadMessages = `SELECT comment CMT FROM Threads WHERE postId = ${postId}`
@@ -1899,7 +1901,7 @@ const updatelikes = `SELECT COUNT(like) as like from LikeDislikePost WHERE (post
     app.get('/openMessageThread', urlEncodedParser, async (req, res) => {
       const threadPostId = req.query.threadPostId;
 
-      const cookie = Object.values(req.cookies).toString();
+      const cookie = req.cookies.userCookie;
 
       const idUsername = await getUsername(cookie);
 
@@ -1941,7 +1943,7 @@ const updatelikes = `SELECT COUNT(like) as like from LikeDislikePost WHERE (post
       const threadId = req.query.threadID;
       const threadUserId = req.query.threadUserId;
 
-      const cookie = Object.values(req.cookies).toString();
+      const cookie = req.cookies.userCookie;
 
       const idSQL = await getID(cookie);
 
@@ -1977,7 +1979,7 @@ const updatelikes = `SELECT COUNT(like) as like from LikeDislikePost WHERE (post
     app.get('/renderDmConvo', urlEncodedParser, async (req, res) => {
       const friendID = req.query.friendID;
       const myID = req.query.myID;
-      const cookie = Object.values(req.cookies).toString();
+      const cookie = req.cookies.userCookie;
 
       const idUsername = await getUsername(cookie);
 
@@ -2071,7 +2073,7 @@ app.get('/changeUsername', urlEncodedParser, async(req, res) => {
       } else {
 
 
-        const cookie = Object.values(req.cookies).toString();
+        const cookie = req.cookies.userCookie;
 
         const idSQL = await getID(cookie);
 
@@ -2097,7 +2099,7 @@ app.get('/changeUsername', urlEncodedParser, async(req, res) => {
 app.post('/deleteFriend', urlEncodedParser, async (req, res) => {
   const deleteThisUser = req.body.deleteMe;
 
-  const cookie = Object.values(req.cookies).toString();
+  const cookie = req.cookies.userCookie;
 
   const idSQL = await getID(cookie);
 

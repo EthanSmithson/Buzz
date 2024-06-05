@@ -233,7 +233,7 @@ const xhr = new XMLHttpRequest();
 // const dmID = document.getElementById('threadID').value;
 // const threadUserId = document.getElementById('threadUserId').value;
 
-xhr.open('GET', `http://localhost:8080/dmMessage?dmMessage=` + data + `&recieverID=` + messageBoxHeaderID.value + `&senderID=` + senderID.value  + `&myName=` + senderName.value, true);
+xhr.open('GET', `/dmMessage?dmMessage=` + data + `&recieverID=` + messageBoxHeaderID.value + `&senderID=` + senderID.value  + `&myName=` + senderName.value, true);
 
   xhr.onreadystatechange = function() {
     if(xhr.readyState === 4 && xhr.status === 200) {
@@ -257,7 +257,7 @@ function renderDmConvo(data) {
 // const dmID = document.getElementById('threadID').value;
 // const threadUserId = document.getElementById('threadUserId').value;
 
-xhr.open('GET', `http://localhost:8080/renderDmConvo?friendID=` + data + `&myID=` + senderID.value, true);
+xhr.open('GET', `/renderDmConvo?friendID=` + data + `&myID=` + senderID.value, true);
 
   xhr.onreadystatechange = function() {
     if(xhr.readyState === 4 && xhr.status === 200) {
