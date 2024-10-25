@@ -483,14 +483,14 @@ app.get("/magic", function (req, res) {
   res.render("magic");
 });
 
-// const server = app.listen(8080, function () {
-//   console.log("Server is running on port 8080 ");
-// });
+const server = app.listen(8080, function () {
+  console.log("Server is running on port 8080 ");
+});
 
-const server = process.env.PORT || 8080;
-app.listen(server, () =>
-  console.log(`Example app is listening on port ${server}.`)
-);
+// const server = process.env.PORT || 8080;
+// app.listen(server, () =>
+//   console.log(`Example app is listening on port ${server}.`)
+// );
 
 
 
